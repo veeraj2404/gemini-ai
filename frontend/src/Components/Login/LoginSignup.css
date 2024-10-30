@@ -1,0 +1,110 @@
+/* General styles for the form */
+.login-signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgb(57, 59, 57);
+    transition: width 0.3s ease-in-out, transform 0.3s ease-in-out; /* Transition added to width and transform */
+    transform: translateX(0);
+    width: calc(100vw);
+  }
+  
+  .login-signup-form {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    padding-bottom: 75px;
+    padding-top: 75px;
+    text-align: center;
+  }
+  
+  h2 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    color: #333;
+  }
+  
+  input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+  }
+  
+  input:focus {
+    border-color: #5c6bc0;
+    outline: none;
+  }
+  
+  .submit-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #5c6bc0;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  
+  .submit-btn:hover {
+    background-color: #3949ab;
+  }
+  
+  .toggle-btn {
+    margin-top: 10px;
+    color: #5c6bc0;
+    cursor: pointer;
+  }
+  
+  .toggle-btn:hover {
+    color: #3949ab;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .login-signup-form {
+      padding: 20px;
+      max-width: 350px;
+    }
+  
+    h2 {
+      font-size: 1.6rem;
+    }
+  
+    input {
+      font-size: 0.9rem;
+      padding: 8px;
+    }
+  
+    .submit-btn {
+      font-size: 1rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .login-signup-form {
+      padding: 15px;
+      max-width: 300px;
+    }
+  
+    h2 {
+      font-size: 1.4rem;
+    }
+  
+    input {
+      font-size: 0.85rem;
+      padding: 6px;
+    }
+  
+    .submit-btn {
+      font-size: 0.9rem;
+    }
+  }
+  

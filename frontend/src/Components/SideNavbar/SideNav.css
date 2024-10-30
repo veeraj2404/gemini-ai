@@ -1,0 +1,309 @@
+/* Layout Styles */
+.side-nav-container {
+    display: flex;
+    height: 100vh;
+    background-color: rgb(45, 46, 45);
+}
+
+/* The side navigation menu */
+.sidenav {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    overflow-x: hidden;
+    padding-top: 20px;
+    transform: translateX(-250px);
+    transition: transform 0.3s ease-in-out;
+}
+
+.sidenav.open {
+    transform: translateX(0);
+}
+
+.chatSession {
+    padding-left: 16px;
+    padding-top: 16px;
+    color: white;
+
+}
+
+.sidenav a {
+    padding: 6px 8px 8px 12px;
+    text-decoration: none;
+    font-size: 16px;
+    color: white;
+    transition: 0.3s;
+}
+
+.session-item:hover {
+    background-color: rgb(57, 59, 57);
+}
+
+/* Main content adjustments */
+.main-content {
+    margin-left: 0;
+    transition: margin-left 0.3s ease-in-out, background-color 0.3s ease-in-out 0.3s; /* Add delay to background color */
+    width: 100%;
+}
+
+.main-content.shifted {
+    margin-left: 250px; /* Shift content when sidenav is open */
+}
+
+.main-content.unshifted {
+    margin-left: 55px; /* Shift content when sidenav is closed */
+}
+
+/* Open button */
+.openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    position: fixed;
+    top: 3px;
+    left: 1px;
+    z-index: 2;
+    background-color: rgb(45, 46, 45);
+    transition: background-color 0.3s ease-in-out; /* Transition for button background color */
+}
+
+.openprofile{
+    font-size: 20px;
+    cursor: pointer;
+    color: white;
+    padding: 12px 15px;
+    border: none;
+    background-color: rgb(45, 46, 45);
+    transition: background-color 0.3s ease-in-out; /* Transition for button background color */
+}
+/* Open Edit */
+.openedit {
+    margin-left: -96px;
+    font-size: 20px;
+    cursor: pointer;
+    color: white;
+    padding: 12px 15px;
+    border: none;
+    background-color: rgb(45, 46, 45);
+    transition: background-color 0.3s ease-in-out; /* Transition for button background color */
+}
+
+.bgChange {
+    background-color: rgb(57, 59, 57);
+    transition: background-color 0.3s ease-in-out 0.3s; /* Add transition to background-color */
+}
+
+.session-item {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0px 10px;
+    border-radius: 12px;
+    transition: background-color 0.3s ease;
+}
+
+
+
+.session-item .ellipsis-icon .edit .fa-ellipsis {
+    margin-left: 8px;
+    cursor: pointer;
+    color: white;
+}
+
+.session-item.active {
+    background-color: rgb(57, 59, 57);
+}
+
+.session-item div {
+    
+    flex: 1; /* This will make the div take up all available space */
+    text-align: left; /* Ensure text inside div is aligned left */
+    overflow: hidden; /* Hide overflow text */
+    white-space: nowrap; /* Prevent text from wrapping to the next line */
+    text-overflow: ellipsis; /* Show ellipsis (...) for overflowing text */
+}
+
+/* Style for the session rename input field */
+.session-rename-input {
+    width: 100%; /* Full width for better UX */
+    padding: 0px 12px; /* Spacing inside the input */
+    font-size: 1rem; /* Adjust font size */
+    background-color: rgb(57, 59, 57);
+    margin-bottom: 0px;
+    color: white;
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 4px; /* Rounded corners */
+    outline: none; /* Remove default outline */
+    transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transition */
+}
+
+/* Focus state */
+.session-rename-input:focus {
+    border-color: #007bff; /* Highlighted border on focus */
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.3); /* Soft blue shadow */
+}
+
+/* Optional: Style for input when renaming */
+.session-rename-input.renaming {
+    background-color: #f9f9f9; /* Slightly darker background */
+}
+
+
+/* SideNav.css */
+
+.profile-container {
+    position: relative; /* Make this the reference for absolute positioning */
+    display: inline-block; /* Aligns the button and dropdown correctly */
+}
+
+.dropdown-menu {
+    display: none; /* Initially hidden */
+    position: absolute;
+    top: 40px; /* Adjust this to position it below the openprofile button */
+    right: 0;
+    background-color: rgb(69, 68, 67);
+    border: 1px solid rgb(69, 68, 67);
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Ensure it's above other content */
+    width: 150px;
+}
+
+.dropdown-menu.show {
+    display: block; /* Show dropdown when 'show' class is added */
+}
+
+.dropdown-menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.dropdown-menu ul li {
+    padding: 10px 15px;
+    white-space: nowrap;      /* Prevent the text from wrapping onto the next line */
+    overflow: hidden;         /* Hide any overflowing content */
+    text-overflow: ellipsis;
+    color: white;
+    text-decoration: none;
+    display: block;
+}
+
+.logout-button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    font-family: cursive;
+}
+
+.dropdown-menu ul li:hover {
+    background-color: rgb(45, 46, 45);    
+    border-radius: 12px;
+    transition: background-color 0.3s ease;
+    overflow: hidden;  
+}
+
+/* Default state: hide the icon */
+.session-item .ellipsis-icon {
+    visibility: hidden;
+    transition: visibility 0.2s ease;
+}
+
+/* Show icon on hover */
+.session-item:hover .ellipsis-icon {
+    visibility: visible;
+}
+
+.edit{
+    background-color: unset;
+    border: none;
+}
+
+/* Style for the dropdown menu */
+/* Style for the dropdown menu */
+.session-dropdown {
+    position: absolute;
+    background-color: rgb(45, 46, 45);
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 8px 0;
+    z-index: 100;
+    top: 75%;
+    right: 5px;
+    min-width: 100px;
+}
+
+.session-dropdown ul {
+    list-style: none;
+    margin: 6px;
+    padding: 0;
+}
+
+.session-dropdown li {
+    padding: 8px 16px;
+    cursor: pointer;
+    /* transition: background-color 0.3s ease; */
+}
+
+.session-dropdown li:hover {
+    background-color: rgb(57, 59, 57);
+    border-radius: 10px;
+}
+
+.header{
+    background-color: rgb(45, 46, 45) !important;
+    color: white;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.body-content{
+    background-color: rgb(45, 46, 45) !important;
+    color: white;
+}
+
+.content-footer{
+    background-color: rgb(45, 46, 45) !important;
+    color: white;
+    border-top: none;
+}
+
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+    .sidenav {
+        width: 100%;
+        transform: translateX(-100%);
+    }
+
+    .sidenav.open {
+        transform: translateX(0);
+    }
+
+    .main-content.shifted {
+        margin-left: 0;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .sidenav a {
+        font-size: 20px;  /* Adjust font size for smaller screens */
+        padding: 10px 20px;
+    }
+
+    .openbtn {
+        font-size: 16px;
+        padding: 8px 12px;
+    }
+}
