@@ -225,6 +225,10 @@
     visibility: visible;
 }
 
+.session-item.active .ellipsis-icon {
+    visibility: visible;
+}
+
 .edit{
     background-color: unset;
     border: none;
