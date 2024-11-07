@@ -30,19 +30,12 @@ function App() {
 
       // Create a new session object
       const newSession = { sessionId };
-
-      // Insert the new session after the last priority session
-      if (lastPriorityIndex === -1) {
-        // If no priority sessions, add to the end
-        return [...prevSessions, newSession];
-      } else {
-        // Insert after the last priority session
-        return [
-          ...prevSessions.slice(0, lastPriorityIndex + 1),
-          newSession,
-          ...prevSessions.slice(lastPriorityIndex + 1),
-        ];
-      }
+      // Insert after the last priority session
+      return [
+        ...prevSessions.slice(0, lastPriorityIndex + 1),
+        newSession,
+        ...prevSessions.slice(lastPriorityIndex + 1),
+      ];
     });
   }, []);
 
