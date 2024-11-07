@@ -86,7 +86,7 @@ router.post('/saveChat', async (req, res) => {
 
         if (!chatSession) {
             // If no chat session exists, create a new one
-            chatSession = new Chats({ chat, email, sessionId, sessionName: sessionName});
+            chatSession = new Chats({ chat, email, sessionId, sessionName: sessionName, priority: false});
         } else {
             // If chat session exists, add the new message to the chat array
             chatSession.chat = chat;
@@ -124,6 +124,32 @@ router.post('/renamesession', async (req, res) => {
         res.status(200).json({ message: 'Chat Session Remaned successfully' });
     } catch (error) {
         console.error('Error saving chat session name:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+})
+
+router.post('/updatepriority', async (req, res) => {
+    console.log("Calling Api to update chat priority...");
+    const {sessionId, priority, userId} = req.body;
+    const user = await User.findById(userId);
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    const email = user.email; // Extract email from the request parameters
+
+    try {
+        let chatSession = await Chats.findOne({ email, sessionId });
+
+        chatSession.priority = priority;
+
+        // Save the updated or new chat session to the database
+        await chatSession.save();
+
+        res.status(200).json({ message: 'Chat Priority changed successfully' });
+    } catch (error) {
+        console.error('Error saving chat Priority state:', error);
         res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 })
@@ -200,7 +226,11 @@ router.get('/getSession', async (req, res) => {
         }
 
         // Extract sessionId and sessionName from each session
-        const sessionData = chatSessions.map(session => ({
+        const sessionData = chatSessions
+        .sort((a, b) => b.sessionId - a.sessionId) 
+        .sort((a, b) => b.priority - a.priority)
+        .map(session => ({
+            priority: session.priority,
             sessionId: session.sessionId,
             sessionName: session.sessionName // Provide default name if missing
         }));

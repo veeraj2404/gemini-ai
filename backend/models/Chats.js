@@ -26,6 +26,9 @@ const chatSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  priority: {
+    type: Boolean,
+  },
 });
 
 // Create Chat Model

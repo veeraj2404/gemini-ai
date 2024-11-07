@@ -10,40 +10,67 @@ function App() {
   const navigate = useNavigate();
 
   const [isSideNavOpen, setSideNavOpen] = useState(true);
-  const [sessions, setSessions] = useState([{ sessionId: 1 }]);
+  const [sessions, setSessions] = useState([]);
   const [untitledSession, setUntitledSession] = useState(true);
 
   const toggleSideNav = () => {
     setSideNavOpen(!isSideNavOpen);
   };
 
-  const handleNewSession = useCallback((sessionId) => {
-    setSessions([...sessions, {sessionId: sessionId }]); // Add new session to session list
-  }, [sessions]);
+  const handleNewSession = useCallback((sessionId, present) => {
+    setSessions((prevSessions) => {
+      if (prevSessions.length === 1 && prevSessions[0].sessionId === 1 && !present) {
+        return prevSessions; // If default session exists, don't add a new one
+      }
+
+      // Find the index of the last session with priority true
+      const lastPriorityIndex = prevSessions.reduce((lastIndex, session, index) => {
+        return session.priority ? index : lastIndex;
+      }, -1);
+
+      // Create a new session object
+      const newSession = { sessionId };
+
+      // Insert the new session after the last priority session
+      if (lastPriorityIndex === -1) {
+        // If no priority sessions, add to the end
+        return [...prevSessions, newSession];
+      } else {
+        // Insert after the last priority session
+        return [
+          ...prevSessions.slice(0, lastPriorityIndex + 1),
+          newSession,
+          ...prevSessions.slice(lastPriorityIndex + 1),
+        ];
+      }
+    });
+  }, []);
+
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (sessions.length === 0) {
-      handleNewSession(1);  // Ensure at least one session is created on app start
+      handleNewSession(1, false);  // Ensure at least one session is created on app start
     }
-    if (token) {
+    if (token && sessions.length > 0) {
       // If the token exists, redirect to TextGenerator
-      navigate(`/textgenerator/session/${sessions.length}`);
+      const id = Math.max(...sessions.map(session => session.sessionId));
+      navigate(`/textgenerator/session/${id}`);
     }
-  }, [handleNewSession, sessions.length]);
+  }, [handleNewSession, sessions]);
 
   return (
 
-      <div className="app-container ">
-        <SideNav isOpen={isSideNavOpen} toggleSideNav={toggleSideNav} onNewSession={handleNewSession} sessions={sessions} setSessions={setSessions} untitledSession={untitledSession} setUntitledSession={setUntitledSession}/>
-        <Routes>
-          <Route path="/" element={<LoginSignup />} />
-          <Route path="/loginsignup" element={<LoginSignup />} />
-          <Route path="/textgenerator/session/:sessionId" element={<TextGenerator untitledSession={untitledSession} setUntitledSession={setUntitledSession}/>} /> {/* Route for session */}
-          <Route path="/textgenerator" element={<TextGenerator />} />
-          <Route path="/imagecontent" element={<ImageContent />} />
-        </Routes>
-      </div>
+    <div className="app-container ">
+      <SideNav isOpen={isSideNavOpen} toggleSideNav={toggleSideNav} onNewSession={handleNewSession} sessions={sessions} setSessions={setSessions} untitledSession={untitledSession} setUntitledSession={setUntitledSession} />
+      <Routes>
+        <Route path="/" element={<LoginSignup />} />
+        <Route path="/loginsignup" element={<LoginSignup />} />
+        <Route path="/textgenerator/session/:sessionId" element={<TextGenerator untitledSession={untitledSession} setUntitledSession={setUntitledSession} />} /> {/* Route for session */}
+        <Route path="/textgenerator" element={<TextGenerator />} />
+        <Route path="/imagecontent" element={<ImageContent />} />
+      </Routes>
+    </div>
   );
 }
 

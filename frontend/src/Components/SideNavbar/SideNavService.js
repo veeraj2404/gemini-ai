@@ -45,3 +45,18 @@ export const deleteSession = async (sessionId, userId) => {
         throw error;
     }
 }
+
+export const updatePriority = async (sessionId, priority, userId) => {
+    try {
+        const data = {
+            sessionId: sessionId,
+            priority: priority,
+            userId: userId
+        }
+        const response = await axios.post(`${url}/updatepriority`, data)
+        console.log(response.data);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+    }
+}
