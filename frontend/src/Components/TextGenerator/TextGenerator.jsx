@@ -15,7 +15,11 @@ export default function TextGenerator({untitledSession, setUntitledSession}) {
     useEffect(() => {
         const fetchMessages = async () => {
             const data = await service.getChat(sessionId, userId);
-            setMessages(data.chat || [])
+            const updatedChat = data.chat.map(item => ({
+                ...item,
+                text: item.text.replace(/\*/g, ' ') // Replace all '*' with space
+              }));
+            setMessages(updatedChat || [])
         };
         fetchMessages();
     }, [sessionId, userId]);
