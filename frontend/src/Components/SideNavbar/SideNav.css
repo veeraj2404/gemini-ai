@@ -108,7 +108,9 @@
     transition: background-color 0.3s ease;
 }
 
-
+.Toastify__close-button {
+    color: white !important;
+}
 
 .session-item .ellipsis-icon .edit .fa-ellipsis {
     margin-left: 8px;

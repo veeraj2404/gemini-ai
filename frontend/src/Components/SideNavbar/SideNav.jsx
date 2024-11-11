@@ -97,7 +97,13 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
 
             // Update session name in the backend
             const message = await service.updateSessionName(sessionId, newSessionName, userId);
-            toast.success(message)
+            toast.success(message, {
+                style: {
+                    backgroundColor: 'rgb(45, 46, 45)',
+                    color: 'white',
+                    fontFamily: 'cursive'
+                }
+            })
         } catch (error) {
             console.error("Failed to update session name:", error);
         }
@@ -124,7 +130,13 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
             createNewSession()
         }
         setModalOpen(false); // Close the modal
-        toast.success(message)
+        toast.success(message, {
+            style: {
+                backgroundColor: 'rgb(45, 46, 45)',
+                color: 'white',
+                fontFamily: 'cursive'
+            }
+        })
     };
 
     const updatePriority = async (id, currentPriority) => {
@@ -150,7 +162,13 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
 
             setSessions(sortedSessions); // Update the state with the sorted sessions
             setSessionDropdownOpen(null); // Close dropdown menu
-            toast.info(message)
+            toast.info(message, {
+                style: {
+                    backgroundColor: 'rgb(45, 46, 45)',
+                    color: 'white',
+                    fontFamily: 'cursive'
+                }
+            })
         } catch (error) {
             console.error("Failed to update priority:", error);
         }
