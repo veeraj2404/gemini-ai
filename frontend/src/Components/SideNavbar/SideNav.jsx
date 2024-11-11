@@ -78,7 +78,9 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
             navigate(`/textgenerator/session/${newSessionId}`);
             onNewSession(newSessionId, present); // Notify the parent to update the current session
             setUntitledSession(false)
+            return
         }
+        toast.warning("New Session is already Present")
     };
 
     const startEditing = (sessionId, currentName) => {
