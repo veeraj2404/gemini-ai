@@ -130,7 +130,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
             createNewSession()
         }
         setModalOpen(false); // Close the modal
-        toast.success(message, {
+        toast.error(message, {
             style: {
                 backgroundColor: 'rgb(45, 46, 45)',
                 color: 'white',
