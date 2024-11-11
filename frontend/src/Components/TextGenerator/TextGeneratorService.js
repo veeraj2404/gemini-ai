@@ -27,7 +27,6 @@ export const saveChatToDatabase = async (endpoint, sessionId, sessionName, userI
             userId: userId
         }
         const response = await axios.post(`${url}/saveChat`, data)
-        console.log(response.data);
     } catch (error) {
         console.error('Error fetching data:', error);
         throw error;

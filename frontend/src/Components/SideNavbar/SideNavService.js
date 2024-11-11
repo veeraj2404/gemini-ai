@@ -25,7 +25,6 @@ export const updateSessionName = async (sessionId, newSessionName, userId) => {
             userId: userId
         }
         const response = await axios.post(`${url}/renamesession`, data)
-        console.log(response.data);
     } catch (error) {
         console.error('Error fetching data:', error);
         throw error;
@@ -39,7 +38,6 @@ export const deleteSession = async (sessionId, userId) => {
             userId: userId
         }
         const response = await axios.post(`${url}/deletesession`, data)
-        console.log(response.data);
     } catch (error) {
         console.error('Error fetching data:', error);
         throw error;
@@ -54,7 +52,6 @@ export const updatePriority = async (sessionId, priority, userId) => {
             userId: userId
         }
         const response = await axios.post(`${url}/updatepriority`, data)
-        console.log(response.data);
     } catch (error) {
         console.error('Error fetching data:', error);
         throw error;

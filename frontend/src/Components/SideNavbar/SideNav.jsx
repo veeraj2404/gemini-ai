@@ -102,7 +102,6 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
 
     const sessionEdit = (sessionId) => {
         setSessionDropdownOpen(prev => (prev === sessionId ? null : sessionId))
-        console.log("session update: ", sessionId);
     }
 
     const handleProfile = () => {
@@ -118,7 +117,6 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
 
     const confirmDeleteSession = async (selectedSession) => {
         await service.deleteSession(selectedSession, userId)
-        console.log(sessions)
         if(selectedSession === 1 && sessions.length === 1){
             createNewSession()
         }
