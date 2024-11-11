@@ -5,20 +5,20 @@ import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import "./TextGenerator.css";
 import { useParams } from 'react-router-dom';
 
-export default function TextGenerator({untitledSession, setUntitledSession}) {
+export default function TextGenerator({ untitledSession, setUntitledSession }) {
 
     const { sessionId } = useParams();
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const userId = localStorage.getItem('userId');
-    
+
     useEffect(() => {
         const fetchMessages = async () => {
             const data = await service.getChat(sessionId, userId);
             const updatedChat = data.chat.map(item => ({
                 ...item,
                 text: item.text.replace(/\*/g, ' ') // Replace all '*' with space
-              }));
+            }));
             setMessages(updatedChat || [])
         };
         fetchMessages();
@@ -34,7 +34,7 @@ export default function TextGenerator({untitledSession, setUntitledSession}) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if(!untitledSession){
+        if (!untitledSession) {
             setUntitledSession(true)
         }
         if (input.trim()) {
@@ -42,7 +42,7 @@ export default function TextGenerator({untitledSession, setUntitledSession}) {
                 ...messages,
                 { text: input, sender: 'user' },
             ];
-            
+
             setMessages(newMessages);
             const sessionName = newMessages[0].text;
             saveChatToDatabase(newMessages, sessionId, sessionName, userId);
@@ -54,8 +54,12 @@ export default function TextGenerator({untitledSession, setUntitledSession}) {
                     ...newMessages,
                     { text: response, sender: 'bot' }
                 ];
-                setMessages(updatedMessages);
-                saveChatToDatabase(updatedMessages, sessionId, sessionName, userId);
+                const updatedChat = updatedMessages.map(item => ({
+                    ...item,
+                    text: item.text.replace(/\*/g, ' ') // Replace all '*' with space
+                }));
+                setMessages(updatedChat);
+                saveChatToDatabase(updatedChat, sessionId, sessionName, userId);
             } catch (error) {
                 console.error('Error generating text:', error);
                 setMessages((prevMessages) => [
