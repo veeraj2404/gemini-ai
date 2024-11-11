@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as service from './TextGeneratorService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
@@ -11,18 +11,31 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const userId = localStorage.getItem('userId');
-
+    const chatEndRef = useRef(null);
     useEffect(() => {
         const fetchMessages = async () => {
             const data = await service.getChat(sessionId, userId);
-            const updatedChat = data.chat.map(item => ({
-                ...item,
-                text: item.text.replace(/\*/g, ' ') // Replace all '*' with space
-            }));
-            setMessages(updatedChat || [])
+            if(data && data.chat && data.chat.length > 0){
+                const updatedChat = data.chat.map(item => ({
+                    ...item,
+                    text: item.text.replace(/\*/g, ' ') // Replace all '*' with space
+                }));
+                setMessages(updatedChat || [])
+                return
+            }
+            setMessages(data.chat || [])
         };
         fetchMessages();
     }, [sessionId, userId]);
+
+    useEffect(() => {
+        if (chatEndRef.current) {
+            chatEndRef.current.scrollIntoView({
+                behavior: 'smooth',
+                block: 'end',
+            });
+        }
+    }, [messages]);
 
     const saveChatToDatabase = (data, id, name, userId) => {
         try {
@@ -83,6 +96,8 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
                             </div>
                         ))
                     )}
+                    {/* This div helps to scroll to the bottom */}
+                    <div ref={chatEndRef} />
                 </div>
 
                 <form className="input-box" onSubmit={handleSubmit}>
