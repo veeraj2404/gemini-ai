@@ -121,7 +121,7 @@ router.post('/renamesession', async (req, res) => {
         // Save the updated or new chat session to the database
         await chatSession.save();
 
-        res.status(200).json({ message: 'Chat Session Remaned successfully' });
+        res.status(200).json({ message: 'Remaned successfully' });
     } catch (error) {
         console.error('Error saving chat session name:', error);
         res.status(500).json({ message: 'Internal server error', error: error.message });
@@ -146,8 +146,8 @@ router.post('/updatepriority', async (req, res) => {
 
         // Save the updated or new chat session to the database
         await chatSession.save();
-
-        res.status(200).json({ message: 'Chat Priority changed successfully' });
+        const message = priority ? 'Set as Priority' : 'Remove from Priority'
+        res.status(200).json({ message: message });
     } catch (error) {
         console.error('Error saving chat Priority state:', error);
         res.status(500).json({ message: 'Internal server error', error: error.message });
@@ -171,7 +171,7 @@ router.post('/deletesession', async (req, res) => {
         // Save the updated or new chat session to the database
         await chatSession.deleteOne(chatSession);;
 
-        res.status(200).json({ message: 'Chat Session Deleted successfully' });
+        res.status(200).json({ message: 'Deleted successfully' });
     } catch (error) {
         console.error('Error deleting chat session:', error);
         res.status(500).json({ message: 'Internal server error', error: error.message });

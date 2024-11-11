@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom'
+import { ToastContainer, toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faPenToSquare, faEllipsis, faUser, faThumbtack } from '@fortawesome/free-solid-svg-icons';
 import './SideNav.css';
 import * as service from './SideNavService';
 import Settings from '../Setting/Settings.jsx';
+import 'react-toastify/dist/ReactToastify.css'; 
 
 export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions, setSessions, untitledSession, setUntitledSession }) {
 
@@ -94,7 +96,8 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
             setEditingSessionId(null);
 
             // Update session name in the backend
-            await service.updateSessionName(sessionId, newSessionName, userId);
+            const message = await service.updateSessionName(sessionId, newSessionName, userId);
+            toast.success(message)
         } catch (error) {
             console.error("Failed to update session name:", error);
         }
@@ -116,17 +119,18 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
 
 
     const confirmDeleteSession = async (selectedSession) => {
-        await service.deleteSession(selectedSession, userId)
+        const message = await service.deleteSession(selectedSession, userId)
         if(selectedSession === 1 && sessions.length === 1){
             createNewSession()
         }
         setModalOpen(false); // Close the modal
+        toast.success(message)
     };
 
     const updatePriority = async (id, currentPriority) => {
         try {
             // Toggle priority on the server
-            await service.updatePriority(id, !currentPriority, userId);
+            const message = await service.updatePriority(id, !currentPriority, userId);
 
             // Update local state to reflect the new priority
             const updatedSessions = sessions.map((session) =>
@@ -146,6 +150,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
 
             setSessions(sortedSessions); // Update the state with the sorted sessions
             setSessionDropdownOpen(null); // Close dropdown menu
+            toast.info(message)
         } catch (error) {
             console.error("Failed to update priority:", error);
         }
@@ -277,6 +282,10 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
             {isSettingOpen && (
                 <Settings setSettingOpen={setSettingOpen} />
             )}
+
+
+            {/* ToastContainer to display toasts */}
+            <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
         </>
     );
 }
