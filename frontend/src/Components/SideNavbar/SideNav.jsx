@@ -303,7 +303,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
 
 
             {/* ToastContainer to display toasts */}
-            <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
+            <ToastContainer position="top-right" autoClose={2000} hideProgressBar={false} />
         </>
     );
 }
