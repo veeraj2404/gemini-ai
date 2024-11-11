@@ -118,6 +118,10 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
 
     const confirmDeleteSession = async (selectedSession) => {
         await service.deleteSession(selectedSession, userId)
+        console.log(sessions)
+        if(selectedSession === 1 && sessions.length === 1){
+            createNewSession()
+        }
         setModalOpen(false); // Close the modal
     };
 
