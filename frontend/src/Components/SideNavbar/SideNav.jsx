@@ -183,7 +183,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                 {
                     token &&
                     <nav className={`sidenav my-5 ${isOpen ? 'open' : ''}`}>
-                        <span><h6 className='chatSession'>Chat Sessions</h6></span>
+                        <span><h6 className='chatSession'>Gemini-AI</h6></span>
                         {sessions.slice().map(session => (
                             <NavLink
                                 to={`/textgenerator/session/${session.sessionId}`}
