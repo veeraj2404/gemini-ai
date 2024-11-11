@@ -10,12 +10,13 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
     const { sessionId } = useParams();
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
+    const [copiedIndex, setCopiedIndex] = useState(null);
     const userId = localStorage.getItem('userId');
     const chatEndRef = useRef(null);
     useEffect(() => {
         const fetchMessages = async () => {
             const data = await service.getChat(sessionId, userId);
-            if(data && data.chat && data.chat.length > 0){
+            if (data && data.chat && data.chat.length > 0) {
                 const updatedChat = data.chat.map(item => ({
                     ...item,
                     text: item.text.replace(/\*/g, ' ') // Replace all '*' with space
@@ -44,6 +45,17 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
             console.error('Error saving chat to database:', error);
         }
     }
+
+    const copyToClipboard = (text, index) => {
+        navigator.clipboard.writeText(text).then(() => {
+            setCopiedIndex(index);
+            setTimeout(() => {
+                setCopiedIndex(null);
+            }, 3000);
+        }).catch((err) => {
+            console.log("Failed to copy message.");
+        });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -92,6 +104,15 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
                     ) : (
                         messages.map((message, index) => (
                             <div key={index} className={`message ${message.sender}`}>
+                                {message.sender === 'bot' && (
+                                    <><button
+                                        className="copy-button"
+                                        onClick={() => copyToClipboard(message.text, index)}>
+                                        {copiedIndex === index ? "Copied!" : "Copy"}
+                                    </button>
+                                        <br />
+                                    </>
+                                )}
                                 {message.text}
                             </div>
                         ))
