@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faPenToSquare, faEllipsis, faUser, faThumbtack } from '@fortawesome/free-solid-svg-icons';
 import './SideNav.css';
 import * as service from './SideNavService';
+import { getChat } from '../TextGenerator/TextGeneratorService.js';
 import Settings from '../Setting/Settings.jsx';
 import $ from 'jquery';
 
@@ -193,6 +194,20 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
         $('#searchBar').val('');
     }
 
+    const exportToTxt = async (id, name) => {
+        const data = await getChat(id, userId);
+        const updatedChat = data.chat.map(item => ({
+            ...item,
+            text: item.text.replace(/\*/g, ' ')
+        }));
+        const textContent = updatedChat.map((msg) => `${msg.sender}: ${msg.text}`).join("\n");
+        const blob = new Blob([textContent], { type: "text/plain" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `${name || "chat_session"}.txt`;
+        link.click();
+    }
+
     return (
         <>
             <div className={`side-nav-container ${isOpen ? '' : 'bgChange'}`}>
@@ -282,6 +297,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                                                         <li onClick={() => updatePriority(session.sessionId, session.priority)}>{session.priority ? "Unpin" : "Pin"}</li>
                                                         <li onClick={() => startEditing(session.sessionId, session.sessionName)}>Rename</li>
                                                         <li onClick={() => handleDeleteClick(session.sessionId)}>Delete</li>
+                                                        <li onClick={() => exportToTxt(session.sessionId, session.sessionName)}>Export</li>
                                                     </ul>
                                                 </div>
                                             )}
