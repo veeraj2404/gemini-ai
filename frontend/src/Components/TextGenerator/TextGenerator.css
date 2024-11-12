@@ -94,6 +94,12 @@
     border-radius: 15px 15px 0 15px;
 }
 
+.typing-indicator {
+    font-style: italic;
+    color: gray;
+    margin-top: 5px;
+}
+
 .message.bot {
     background-color: rgb(45, 46, 45);
     color: white;

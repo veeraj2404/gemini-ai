@@ -13,6 +13,7 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
     const [copiedIndex, setCopiedIndex] = useState(null);
     const userId = localStorage.getItem('userId');
     const chatEndRef = useRef(null);
+    const [isTyping, setIsTyping] = useState(false);
     useEffect(() => {
         const fetchMessages = async () => {
             const data = await service.getChat(sessionId, userId);
@@ -58,6 +59,7 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
     };
 
     const handleSubmit = async (e) => {
+        setIsTyping(true);
         e.preventDefault();
         if (!untitledSession) {
             setUntitledSession(true)
@@ -91,8 +93,10 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
                     ...prevMessages,
                     { text: 'Failed to generate text.', sender: 'bot' }
                 ]);
+            } finally{
+                setIsTyping(false);
             }
-        }
+        } 
     }
 
     return (
@@ -117,6 +121,7 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
                             </div>
                         ))
                     )}
+                    {isTyping && <div className="typing-indicator">Bot is typing...</div>}
                     {/* This div helps to scroll to the bottom */}
                     <div ref={chatEndRef} />
                 </div>
