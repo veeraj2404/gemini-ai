@@ -29,7 +29,7 @@ function App() {
       }, -1);
 
       // Create a new session object
-      const newSession = { sessionId };
+      const newSession = { priority: false, sessionId, sessionName: `Chat Session ${sessionId}` };
       // Insert after the last priority session
       return [
         ...prevSessions.slice(0, lastPriorityIndex + 1),

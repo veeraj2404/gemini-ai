@@ -6,12 +6,14 @@ import { faBars, faPenToSquare, faEllipsis, faUser, faThumbtack } from '@fortawe
 import './SideNav.css';
 import * as service from './SideNavService';
 import Settings from '../Setting/Settings.jsx';
+import $ from 'jquery';
 
 export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions, setSessions, untitledSession, setUntitledSession }) {
 
     const navigate = useNavigate();
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
+    const [filteredSessions, setFilteredSessions] = useState([]);
     const [isDropdownOpen, setDropdownOpen] = useState(false); // State to manage dropdown visibility
     const [isSessionDropdownOpen, setSessionDropdownOpen] = useState(null); // State to manage dropdown visibility
     const dropdownRef = useRef(null);
@@ -127,7 +129,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
 
     const confirmDeleteSession = async (selectedSession) => {
         const message = await service.deleteSession(selectedSession, userId)
-        if(selectedSession === 1 && sessions.length === 1){
+        if (selectedSession === 1 && sessions.length === 1) {
             createNewSession()
         }
         setModalOpen(false); // Close the modal
@@ -175,6 +177,22 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
         }
     };
 
+    const searchBar = (e) => {
+        const name = e.target.value;
+        setFilteredSessions(sessions.filter(session =>
+            session.sessionName.toLowerCase().includes(name.toLowerCase())
+        ));
+        if (name === '') {
+            setFilteredSessions([])
+        }
+    }
+
+    const navigateFromSearchBar = (id) => {
+        navigate(`/textgenerator/session/${id}`);
+        setFilteredSessions([])
+        $('#searchBar').val('');
+    }
+
     return (
         <>
             <div className={`side-nav-container ${isOpen ? '' : 'bgChange'}`}>
@@ -207,6 +225,21 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                 {
                     token &&
                     <nav className={`sidenav my-5 ${isOpen ? 'open' : ''}`}>
+                        <div className="search-bar">
+                            <input onChange={(e) => searchBar(e)} type="text" id='searchBar' className="form-control" placeholder="Search Session" aria-label="session" />
+                        </div>
+
+                        {filteredSessions.length > 0 && (
+                            <div className="search-bar-menu show">
+                                <ul>
+                                    {filteredSessions.map(session => (
+                                        <li onClick={() => navigateFromSearchBar(session.sessionId)} key={session.sessionId}>
+                                            {session.sessionName}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                         <span><h6 className='chatSession'>Gemini-AI</h6></span>
                         {sessions.slice().map(session => (
                             <NavLink
@@ -226,15 +259,13 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                                     />
                                 ) : (
                                     <div onDoubleClick={() => startEditing(session.sessionId, session.sessionName)}>
-                                        {session.sessionName ? (
-                                            <> <span>
-                                                {session.sessionName}
+                                        <> <span>
+                                            {session.sessionName}
+                                        </span>
+                                            <span style={{ marginLeft: "5px" }}>
+                                                {session.priority && <FontAwesomeIcon icon={faThumbtack} />}
                                             </span>
-                                                <span style={{ marginLeft: "5px" }}>
-                                                    {session.priority && <FontAwesomeIcon icon={faThumbtack} />}
-                                                </span>
-                                            </>
-                                        ) : `Chat Session ${session.sessionId}`}
+                                        </>
                                     </div>
                                 )}
                                 {
