@@ -206,7 +206,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
         link.href = URL.createObjectURL(blob);
         link.download = `${name}.txt`;
         link.click();
-        toast.success("Download Sucessfully", {
+        toast.success("Download successfully", {
             style: {
                 backgroundColor: 'rgb(45, 46, 45)',
                 color: 'white',
