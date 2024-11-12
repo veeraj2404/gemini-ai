@@ -63,6 +63,11 @@
     cursor: pointer;
 }
 
+.search-bar-menu ul li:hover{
+    background-color: #d6d4d4;
+    border-radius: 4px;
+}
+
 .sidenav a {
     padding: 6px 8px 8px 12px;
     text-decoration: none;
