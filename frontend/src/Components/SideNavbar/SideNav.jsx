@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faPenToSquare, faEllipsis, faUser, faThumbtack } from '@fortawesome/free-solid-svg-icons';
 import './SideNav.css';
 import * as service from './SideNavService';
 import Settings from '../Setting/Settings.jsx';
-import 'react-toastify/dist/ReactToastify.css'; 
 
 export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions, setSessions, untitledSession, setUntitledSession }) {
 
