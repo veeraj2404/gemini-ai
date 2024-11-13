@@ -167,7 +167,7 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
                         </button>
                         <input
                             type="text"
-                            className="form-control"
+                            className="form-control input-query"
                             placeholder="Type your message..."
                             value={input}
                             onChange={(e) => setInput(e.target.value)}

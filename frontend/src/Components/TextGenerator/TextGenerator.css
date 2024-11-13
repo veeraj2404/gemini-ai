@@ -149,7 +149,7 @@
     align-items: center;
 }
 
-.form-control {
+.input-query {
     width: 100%;
     padding: 10px;
     padding-left: 50px; /* Adds space for the icon inside the input */
