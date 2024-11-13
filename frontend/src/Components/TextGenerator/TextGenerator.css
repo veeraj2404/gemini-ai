@@ -122,23 +122,49 @@
     background-color: rgb(85, 89, 85);
 }
 
-.input-box {
-    display: flex;
-    margin-top: auto;
-}
-
 .input-box input {
     flex: 1;
     border: 1px solid rgb(85, 89, 85);
     border-radius: 25px 0 0 25px;
 }
 
-.input-box button {
+.submit {
     border-radius: 0 25px 25px 0;
     border-color: rgb(45, 46, 45);
     padding: 10px 15px;
     background-color: rgb(45, 46, 45);
     margin-bottom: 15px;
+}
+
+.input-box {
+    display: flex;
+    margin-top: auto;
+    align-items: center;
+}
+
+.input-with-icon {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    padding-left: 50px; /* Adds space for the icon inside the input */
+}
+
+.upload-btn {
+    position: absolute;
+    /* padding: 10px 15px; */
+    margin-bottom: 15px;
+    left: 10px;
+    background: white;
+    border: none;
+    color: black;
+    cursor: pointer;
+    font-size: 18px;
 }
 
 /* Responsive design */

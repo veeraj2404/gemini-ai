@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as service from './TextGeneratorService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faPaperPlane, faFileArrowUp } from '@fortawesome/free-solid-svg-icons';
 import "./TextGenerator.css";
 import { useParams } from 'react-router-dom';
 
@@ -71,7 +71,7 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
             ];
 
             setMessages(newMessages);
-            const sessionName = newMessages[0].text;
+            const sessionName = newMessages[0].text.substring(0, 20);
             saveChatToDatabase(newMessages, sessionId, sessionName, userId);
             setInput('');
 
@@ -93,11 +93,36 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
                     ...prevMessages,
                     { text: 'Failed to generate text.', sender: 'bot' }
                 ]);
-            } finally{
+            } finally {
                 setIsTyping(false);
             }
-        } 
+        }
     }
+
+    // Function to handle the file upload click
+    const handleFileUploadClick = () => {
+        document.getElementById('file-upload').click();
+    };
+
+    // Function to handle file change
+    const handleFileChange = async (e) => {
+        setIsTyping(true);
+        const file = e.target.files[0];
+
+        if (file) {
+            try {
+                const upload = await service.uploadImageToChat(sessionId, userId, file)
+                setMessages(upload.data)
+                const response = await service.getImageContent(sessionId, userId, file);
+                setMessages(response.data)
+            } catch (error) {
+                console.error('Error generating text:', error);
+                // setResult('Failed to generate text.');
+            } finally {
+                setIsTyping(false);
+            }
+        }
+    };
 
     return (
         <div className="text-container">
@@ -117,7 +142,16 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
                                         <br />
                                     </>
                                 )}
-                                {message.text}
+                                {message.sender === 'user' && message.text.startsWith('{"contentType":') ? (
+                                    (() => {
+                                        const parsedMessage = JSON.parse(message.text);
+                                        const data = `data:${parsedMessage.contentType};base64,${parsedMessage.data}`;
+                                        return <img src={data} style={{ maxWidth: "100%", height: "auto", borderRadius: "15px 15px 0 15px" }} alt="Uploaded content" />;
+                                    })()
+                                ) : (
+                                    <span>{message.text}</span>
+                                )}
+
                             </div>
                         ))
                     )}
@@ -127,17 +161,31 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
                 </div>
 
                 <form className="input-box" onSubmit={handleSubmit}>
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Type your message..."
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                    />
-                    <button type="submit" className="btn btn-secondary">
+                    <div className="input-with-icon">
+                        <button type="button" disabled={messages.length === 0} className="btn upload-btn" onClick={handleFileUploadClick}>
+                            <FontAwesomeIcon icon={faFileArrowUp} />
+                        </button>
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Type your message..."
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                        />
+                        {/* Hidden file input */}
+                        <input
+                            type="file"
+                            id="file-upload"
+                            accept="image/*"
+                            style={{ display: 'none' }}
+                            onChange={handleFileChange}
+                        />
+                    </div>
+                    <button type="submit" className="btn submit btn-secondary">
                         <FontAwesomeIcon icon={faPaperPlane} />
                     </button>
                 </form>
+
             </div>
         </div>
     )

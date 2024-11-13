@@ -7,6 +7,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 //import models
 const Chats = require('../models/Chats')
 const User = require('../models/User');
+const Image = require('../models/Image');
 
 // Initialize Google AI File Manager
 const fileManager = new GoogleAIFileManager(process.env.API_KEY); // Adjust if necessary
@@ -14,12 +15,19 @@ const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
 // Set up multer for file upload
 const upload = multer({ dest: 'uploads/' }); // Files will be saved to the "uploads" directory
-
+const uploaded = multer({ storage: multer.memoryStorage() })
 // API endpoint for generating content
+
 router.post('/imagecontent', upload.single('file'), async (req, res) => {
-    console.log("Image Content Generating... ",)
-    const { prompt } = req.body;
+    console.log("Calling Api for Image Content Generating... ",)
     const file = req.file;  // Access the uploaded file details
+    const { sessionId, userId } = req.body;
+    const user = await User.findById(userId);
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+    const email = user.email;
 
     if (!file) {
         return res.status(400).json({ error: 'File is required' });
@@ -38,7 +46,6 @@ router.post('/imagecontent', upload.single('file'), async (req, res) => {
         // Generate content based on the uploaded image
         const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
         const result = await model.generateContent([
-            prompt,
             {
                 fileData: {
                     fileUri: uploadResult.file.uri,
@@ -46,15 +53,55 @@ router.post('/imagecontent', upload.single('file'), async (req, res) => {
                 },
             },
         ]);
-
+        let chatSession = await Chats.findOne({ email, sessionId });
+        const newMessages = [
+            ...chatSession.chat,
+            { text: result.response.text(), sender: 'bot' },
+        ];
+        chatSession.chat = newMessages;
+        await chatSession.save();
         res.json({
             message: result.response.text(),
+            data: newMessages
         });
     } catch (error) {
         console.error('Error processing request:', error);
         res.status(500).json({ error: 'Internal server error', details: error.message });
     }
 
+});
+
+router.post('/upload', uploaded.single('file'), async (req, res) => {
+    console.log("Calling Api to save image data...");
+
+    const { sessionId, userId } = req.body;
+    const user = await User.findById(userId);
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+    const email = user.email;
+
+    try {
+        let chatSession = await Chats.findOne({ email, sessionId });
+
+        const image = new Image({
+            contentType: req.file.mimetype,
+            name: req.file.originalname,
+            data: req.file.buffer.toString('base64'),
+        });
+        const chat = JSON.stringify(image);
+        const newMessages = [
+            ...chatSession.chat,
+            { text: chat, sender: 'user' },
+        ];
+        chatSession.chat = newMessages;
+        await chatSession.save();
+        res.json({ message: 'Image uploaded successfully!', data: newMessages });
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        res.status(500).json({ error: 'Failed to upload image' });
+    }
 });
 
 router.get('/textgenerate', async (req, res) => {

@@ -248,7 +248,8 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                     token &&
                     <nav className={`sidenav my-5 ${isOpen ? 'open' : ''}`}>
                         <div className="search-bar">
-                            <input onChange={(e) => searchBar(e)} type="text" id='searchBar' className="form-control" placeholder="Search Session" aria-label="session" />
+                            <input onChange={(e) => searchBar(e)} type="text" id='searchBar' className="form-control" placeholder="Search Session" aria-label="session" 
+                            style={{paddingLeft: "12px"}}/>
                         </div>
 
                         {filteredSessions.length > 0 && (

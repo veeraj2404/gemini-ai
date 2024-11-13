@@ -47,3 +47,43 @@ export const getChat = async (sessionId, userId) => {
         throw error;
     }
 };
+
+export const getImageContent = async (sessionId, userId, file) => {
+
+    const formData = new FormData();
+    formData.append('file', file); // Append the file
+    formData.append('sessionId', sessionId); // Append the sessionId
+    formData.append('userId', userId); // Append the userId
+    
+    try {
+        const response = await axios.post(`${url}/imagecontent`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+    }
+};
+
+export const uploadImageToChat = async (sessionId, userId,file) => {
+
+    const formData = new FormData();
+    formData.append('file', file); // Append the file
+    formData.append('sessionId', sessionId); // Append the sessionId
+    formData.append('userId', userId); // Append the userId
+    
+    try {
+        const response = await axios.post(`${url}/upload`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+    }
+};
