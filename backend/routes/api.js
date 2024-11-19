@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const multer = require('multer');
+const fontkit = require('fontkit');
+const fs = require('fs');
+const { PDFDocument, rgb } = require('pdf-lib');
 const { GoogleAIFileManager } = require('@google/generative-ai/server')
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
@@ -119,7 +122,7 @@ router.get('/textgenerate', async (req, res) => {
 
 router.post('/saveChat', async (req, res) => {
     console.log("Calling Api to save chat data...");
-    const {chat, sessionId, sessionName, userId} = req.body;
+    const { chat, sessionId, sessionName, userId } = req.body;
     const user = await User.findById(userId);
 
     if (!user) {
@@ -133,7 +136,7 @@ router.post('/saveChat', async (req, res) => {
 
         if (!chatSession) {
             // If no chat session exists, create a new one
-            chatSession = new Chats({ chat, email, sessionId, sessionName: sessionName, priority: false});
+            chatSession = new Chats({ chat, email, sessionId, sessionName: sessionName, priority: false });
         } else {
             // If chat session exists, add the new message to the chat array
             chatSession.chat = chat;
@@ -151,7 +154,7 @@ router.post('/saveChat', async (req, res) => {
 
 router.post('/renamesession', async (req, res) => {
     console.log("Calling Api to rename chat session...");
-    const {sessionId, sessionName, userId} = req.body;
+    const { sessionId, sessionName, userId } = req.body;
     const user = await User.findById(userId);
 
     if (!user) {
@@ -177,7 +180,7 @@ router.post('/renamesession', async (req, res) => {
 
 router.post('/updatepriority', async (req, res) => {
     console.log("Calling Api to update chat priority...");
-    const {sessionId, priority, userId} = req.body;
+    const { sessionId, priority, userId } = req.body;
     const user = await User.findById(userId);
 
     if (!user) {
@@ -203,7 +206,7 @@ router.post('/updatepriority', async (req, res) => {
 
 router.post('/deletesession', async (req, res) => {
     console.log("Calling Api to delete chat session...");
-    const {sessionId, userId} = req.body;
+    const { sessionId, userId } = req.body;
     const user = await User.findById(userId);
 
     if (!user) {
@@ -274,19 +277,126 @@ router.get('/getSession', async (req, res) => {
 
         // Extract sessionId and sessionName from each session
         const sessionData = chatSessions
-        .sort((a, b) => b.sessionId - a.sessionId) 
-        .sort((a, b) => b.priority - a.priority)
-        .map(session => ({
-            priority: session.priority,
-            sessionId: session.sessionId,
-            sessionName: session.sessionName // Provide default name if missing
-        }));
+            .sort((a, b) => b.sessionId - a.sessionId)
+            .sort((a, b) => b.priority - a.priority)
+            .map(session => ({
+                priority: session.priority,
+                sessionId: session.sessionId,
+                sessionName: session.sessionName // Provide default name if missing
+            }));
 
         // Respond with the chat data
         res.status(200).json({ sessions: sessionData });
     } catch (error) {
         console.error('Error fetching chat sessions:', error);
         res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+});
+
+router.get('/generate-pdf', async (req, res) => {
+    console.log("Calling Api to download session chat...");
+    try {
+        const { sessionName, chat } = req.query;
+
+        // Create a new PDF document
+        const pdfDoc = await PDFDocument.create();
+        pdfDoc.registerFontkit(fontkit);
+
+        // Embed a custom font
+        const fontBytes = fs.readFileSync('fonts/NotoSans-Regular.ttf');
+        const customFont = await pdfDoc.embedFont(fontBytes);
+
+        let page = pdfDoc.addPage([600, 800]);
+        const { width, height } = page.getSize();
+
+        // Add the title
+        const title = sessionName;
+        page.drawText(title, {
+            x: 50,
+            y: height - 50,
+            size: 16,
+            font: customFont,
+            color: rgb(0, 0, 1),
+        });
+
+        // Add a horizontal line
+        page.drawLine({
+            start: { x: 50, y: height - 70 },
+            end: { x: width - 50, y: height - 70 },
+            thickness: 1,
+            color: rgb(0, 0, 0),
+        });
+
+        // Add chat messages
+        let yPosition = height - 100;
+        const lineHeight = 20;
+        const margin = 50;
+
+        // Function to wrap text with a max width
+        const wrapText = (text, maxWidth) => {
+            const words = text.split(' ');
+            const lines = [];
+            let currentLine = '';
+
+            words.forEach((word) => {
+                const testLine = currentLine + word + ' ';
+                const testWidth = customFont.widthOfTextAtSize(testLine, 12);
+                if (testWidth > maxWidth && currentLine !== '') {
+                    lines.push(currentLine.trim());
+                    currentLine = word + ' ';
+                } else {
+                    currentLine = testLine;
+                }
+            });
+
+            if (currentLine) {
+                lines.push(currentLine.trim());
+            }
+
+            return lines;
+        };
+
+        // Function to add chat message with sender name and dynamic text styling
+        const addMessage = (sender, text, isBot = false) => {
+            const senderText = `${sender}: `;
+            const lines = wrapText(senderText + text, width - margin * 2);
+
+            lines.forEach((line, index) => {
+                if (yPosition < 50) {
+                    page = pdfDoc.addPage([600, 800]);
+                    yPosition = height - 50;
+                }
+                
+                // Apply different colors for user and bot
+                const senderColor = isBot ? rgb(0, 0, 1) : rgb(0, 0, 0); // Blue for bot, black for user
+                page.drawText(line, {
+                    x: margin,
+                    y: yPosition,
+                    size: 12,
+                    font: customFont,
+                    color: senderColor,
+                });
+
+                yPosition -= lineHeight;
+            });
+        };
+
+        // Loop through the chat and add messages
+        chat.forEach(({ sender, text }) => {
+            const isBot = sender.toLowerCase() === 'bot'; // Check if it's a bot message
+            addMessage(sender, text, isBot);
+        });
+
+        // Save and send the PDF
+        const pdfBytes = await pdfDoc.save();
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment; filename=${sessionName}.pdf`,
+        });
+        res.send(Buffer.from(pdfBytes));
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        res.status(500).json({ message: 'Error generating PDF' });
     }
 });
 

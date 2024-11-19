@@ -195,24 +195,21 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
     }
 
     const exportToTxt = async (id, name) => {
-        const data = await getChat(id, userId);
-        const updatedChat = data.chat.map(item => ({
-            ...item,
-            text: item.text.replace(/\*/g, ' ')
-        }));
-        const textContent = updatedChat.map((msg) => `${msg.sender}: ${msg.text}`).join("\n");
-        const blob = new Blob([textContent], { type: "text/plain" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `${name}.txt`;
-        link.click();
-        toast.success("Download successfully", {
-            style: {
-                backgroundColor: 'rgb(45, 46, 45)',
-                color: 'white',
-                fontFamily: 'cursive'
-            }
-        })
+        console.log("start")
+        try {
+            const chat = await getChat(id, userId)
+            const response = await service.downloadChatPdf(name, chat.chat);
+            const blob = new Blob([response], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `${name}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
+        } catch (error) {
+            console.error('Error downloading PDF:', error);
+        }
     }
 
     return (

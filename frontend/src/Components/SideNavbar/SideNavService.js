@@ -60,3 +60,11 @@ export const updatePriority = async (sessionId, priority, userId) => {
         throw error;
     }
 }
+
+export const downloadChatPdf = async (sessionName, chat) => {
+    const response = await axios.get(`${url}/generate-pdf`, {
+        params: { sessionName, chat },
+        responseType: 'blob', // To handle binary data
+    });
+    return response.data;
+};
