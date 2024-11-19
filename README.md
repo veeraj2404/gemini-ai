@@ -35,6 +35,7 @@ This project is a ChatGPT clone built using the **Gemini AI API**, designed to d
         npm install
     3. Add your API key in a .env file:
         Create a .env file in the backend directory with the following content:
+            API_KEY=[GOOGLE_AI_KEY]
     4. Start the backend server:
         node server.js
 

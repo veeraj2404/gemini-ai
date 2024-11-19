@@ -1,6 +1,5 @@
 import './App.css';
 import { Route, Routes, useNavigate } from 'react-router-dom';
-import ImageContent from './Components/ImageGenerator/ImageContent';
 import TextGenerator from './Components/TextGenerator/TextGenerator';
 import SideNav from './Components/SideNavbar/SideNav';
 import { useCallback, useEffect, useState } from 'react';
