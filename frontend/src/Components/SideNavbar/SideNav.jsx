@@ -77,9 +77,23 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
     const toggleDropdown = () => {
         setDropdownOpen(prev => !prev);
     }
+    
+    const resetState = () => {
+        setPreview('')
+        setFilteredSessions([])
+        setDropdownOpen(false)
+        setSessionDropdownOpen(null)
+        setModalOpen(false)
+        setSettingOpen(false)
+        setEditingSessionId(null)
+        setNewSessionName("")
+        setPresent(true)
+        setSelectedSession(null)
+    }
 
     const logout = () => {
         localStorage.clear();
+        resetState()
         navigate('/loginsignup');
     }
 
