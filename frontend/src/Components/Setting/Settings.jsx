@@ -10,7 +10,8 @@ export default function Settings({ setSettingOpen }) {
     const userId = localStorage.getItem('userId');
     const [message, setMessage] = useState('');
 
-    // const [profilePic, setProfilePic] = useState(profile);
+    const [file, setFile] = useState('');
+    const [profilePic, setProfilePic] = useState(false);
     const [preview, setPreview] = useState(profile);
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -27,6 +28,9 @@ export default function Settings({ setSettingOpen }) {
             const user = await service.getUser(userId);
             setUsername(user.username);
             setEmail(user.email);
+            if(user.preview){
+                setPreview(user.preview)
+            }
         }
 
         getUser()
@@ -53,6 +57,10 @@ export default function Settings({ setSettingOpen }) {
         const user = await service.updateProfile(data);
         setMessage(user.message);
 
+        if(profilePic){
+            await service.uploadImage(userId, file)
+        }
+
         if (user.message === 'Update Successfully') {
             setOldPass('');
             setNewPass('');
@@ -67,14 +75,18 @@ export default function Settings({ setSettingOpen }) {
                 element.style.color = 'red';
             });
         }
-
+        setFile('')
+        setProfilePic(false)
+        setTimeout(() => {
+            setMessage('')
+        }, 3000);
     }
 
     const previewImage = (e) => {
         const file = e.target.files[0];
-
+        setFile(file)
+        setProfilePic(true)
         if (file) {
-            // setProfilePic(file);
             const previewUrl = URL.createObjectURL(file);
             setPreview(previewUrl); // Update preview
         }

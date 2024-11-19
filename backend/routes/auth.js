@@ -9,9 +9,12 @@ const generateToken = (id) => {
   return jwt.sign({ id }, 'your-secret-key', { expiresIn: '1h' });
 };
 
+//Model
+const Image = require('../models/Image');
+
 // Multer configuration for file upload
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const upload = multer({ storage: multer.memoryStorage() })
 
 // Sign Up
 router.post('/signup', async (req, res) => {
@@ -64,9 +67,14 @@ router.get('/getUser', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    
+
+    if (user.profilePic) {
+      const profile = JSON.parse(user.profilePic);
+      var data = `data:${profile.contentType};base64,${profile.data}`;
+    }
+
     // res.contentType(user.contentType);
-    res.status(200).json({ username: user.username, email: user.email });
+    res.status(200).json({ username: user.username, email: user.email, preview: data });
   } catch (error) {
     res.status(500).json({ message: 'User Error', error });
   }
@@ -75,28 +83,28 @@ router.get('/getUser', async (req, res) => {
 router.post('/updateProfile', async (req, res) => {
   console.log("Calling Api to update user...");
   const { username, email, password, newPass } = req.body;
-  
+
   try {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    if(user.username !== username){
+    if (user.username !== username) {
       const userExistsByUsername = await User.findOne({ username });
       if (userExistsByUsername) return res.status(200).json({ message: 'Username already exists' });
     }
 
-    if(password !== ''){
+    if (password !== '') {
       const isMatch = await user.matchPassword(password);
       if (!isMatch) return res.status(200).json({ message: 'Invalid password' });
-      if( newPass === ''){
+      if (newPass === '') {
         return res.status(200).json({ message: 'Please enter new Password' })
       }
       user.password = newPass;
     }
 
-    if(password === '' && newPass !== ''){
+    if (password === '' && newPass !== '') {
       return res.status(200).json({ message: 'Please enter old Password' })
-    } 
+    }
 
     user.username = username;
     await user.save();
@@ -107,6 +115,35 @@ router.post('/updateProfile', async (req, res) => {
     res.status(500).json({ message: 'Login error', error });
   }
 
+});
+
+router.post('/uploadImage', upload.single('file'), async (req, res) => {
+  console.log("Calling Api to save profilePic...");
+
+  const { userId } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const image = new Image({
+      contentType: req.file.mimetype,
+      name: req.file.originalname,
+      data: req.file.buffer.toString('base64'),
+    });
+
+    const profilePic = JSON.stringify(image);
+    user.profilePic = profilePic;
+
+    await user.save();
+
+    res.json({ message: 'Image uploaded successfully!' });
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    res.status(500).json({ error: 'Failed to upload image' });
+  }
 });
 
 module.exports = router;

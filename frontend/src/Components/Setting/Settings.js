@@ -27,3 +27,22 @@ export const updateProfile = async (user) => {
         throw error;
     }
 };
+
+export const uploadImage = async (userId, file) => {
+
+    const formData = new FormData();
+    formData.append('file', file); // Append the file
+    formData.append('userId', userId); // Append the userId
+
+    try {
+        const response = await axios.post(`${url}/uploadImage`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+    }
+};
