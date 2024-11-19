@@ -6,6 +6,7 @@ import { faBars, faPenToSquare, faEllipsis, faUser, faThumbtack } from '@fortawe
 import './SideNav.css';
 import * as service from './SideNavService';
 import { getChat } from '../TextGenerator/TextGeneratorService.js';
+import { getUser } from '../Setting/Settings.js'
 import Settings from '../Setting/Settings.jsx';
 import $ from 'jquery';
 
@@ -14,6 +15,8 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
     const navigate = useNavigate();
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
+
+    const [preview, setPreview] = useState('');
     const [filteredSessions, setFilteredSessions] = useState([]);
     const [isDropdownOpen, setDropdownOpen] = useState(false); // State to manage dropdown visibility
     const [isSessionDropdownOpen, setSessionDropdownOpen] = useState(null); // State to manage dropdown visibility
@@ -39,6 +42,12 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                         originalIndex: index, // Add original index to each session
                     }));
                     setSessions(indexedData || []);
+
+                    const user = await getUser(userId);
+                    if(user.preview){
+                        setPreview(user.preview)
+                    }
+
                 } catch (error) {
                     console.error('Error fetching session data:', error);
                 }
@@ -226,7 +235,17 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                                     <FontAwesomeIcon icon={faPenToSquare} />
                                 </button>
                                 <button className={`openprofile ${isOpen ? '' : 'bgChange'}`} onClick={toggleDropdown}>
-                                    <FontAwesomeIcon icon={faUser} />
+                                    {
+                                        preview === '' ?
+                                            <FontAwesomeIcon icon={faUser} /> :
+                                            <img src={preview} style={{
+                                                width: '24px',
+                                                height: '24px',
+                                                objectFit: 'cover',
+                                                marginLeft: '-7px',
+                                                marginBottom: '-5px'
+                                            }} className="rounded float-end" alt="Profile" />
+                                    }
                                 </button>
                                 {isDropdownOpen && ( // Conditionally render the dropdown
                                     <div className="dropdown-menu show">
@@ -245,8 +264,8 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                     token &&
                     <nav className={`sidenav my-5 ${isOpen ? 'open' : ''}`}>
                         <div className="search-bar">
-                            <input onChange={(e) => searchBar(e)} type="text" id='searchBar' className="form-control" placeholder="Search Session" aria-label="session" 
-                            style={{paddingLeft: "12px"}}/>
+                            <input onChange={(e) => searchBar(e)} type="text" id='searchBar' className="form-control" placeholder="Search Session" aria-label="session"
+                                style={{ paddingLeft: "12px" }} />
                         </div>
 
                         {filteredSessions.length > 0 && (
