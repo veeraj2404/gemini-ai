@@ -61,7 +61,6 @@ function App() {
         <Route path="/loginsignup" element={<LoginSignup />} />
         <Route path="/textgenerator/session/:sessionId" element={<TextGenerator untitledSession={untitledSession} setUntitledSession={setUntitledSession} />} /> {/* Route for session */}
         <Route path="/textgenerator" element={<TextGenerator />} />
-        <Route path="/imagecontent" element={<ImageContent />} />
       </Routes>
     </div>
   );
