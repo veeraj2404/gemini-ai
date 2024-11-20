@@ -93,7 +93,7 @@ export default function Profile({ setProfileOpen }) {
     }
 
     return (
-        <div className="modal show d-block " tabIndex="-1" role="dialog" >
+        <div className="modal show d-block overlay" tabIndex="-1" role="dialog" >
             <div className="modal-dialog" role="document">
                 <div className="modal-content">
                     <div className="modal-header heading">
