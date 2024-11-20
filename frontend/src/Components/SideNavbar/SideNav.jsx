@@ -44,7 +44,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                     setSessions(indexedData || []);
 
                     const user = await getUser(userId);
-                    if(user.preview){
+                    if (user.preview) {
                         setPreview(user.preview)
                     }
 
@@ -77,7 +77,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
     const toggleDropdown = () => {
         setDropdownOpen(prev => !prev);
     }
-    
+
     const resetState = () => {
         setPreview('')
         setFilteredSessions([])
@@ -294,56 +294,58 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                             </div>
                         )}
                         <span><h6 className='chatSession'>Gemini-AI</h6></span>
-                        {sessions.slice().map(session => (
-                            <NavLink
-                                to={`/textgenerator/session/${session.sessionId}`}
-                                className={({ isActive }) => (isActive ? 'session-item active' : 'session-item')} // Apply active class to session-item div
-                                key={session.sessionId}
-                            >
-                                {editingSessionId === session.sessionId ? (
-                                    <input
-                                        type="text"
-                                        value={newSessionName}
-                                        onChange={(e) => setNewSessionName(e.target.value)}
-                                        onBlur={() => handleRenameSession(session.sessionId)}
-                                        onKeyDown={(e) => e.key === 'Enter' && handleRenameSession(session.sessionId)}
-                                        className="session-rename-input"
-                                        autoFocus
-                                    />
-                                ) : (
-                                    <div onDoubleClick={() => startEditing(session.sessionId, session.sessionName)}>
-                                        <> <span>
-                                            {session.sessionName}
-                                        </span>
-                                            <span style={{ marginLeft: "5px" }}>
-                                                {session.priority && <FontAwesomeIcon icon={faThumbtack} />}
+                        <div className='session-content'>
+                            {sessions.slice().map(session => (
+                                <NavLink
+                                    to={`/textgenerator/session/${session.sessionId}`}
+                                    className={({ isActive }) => (isActive ? 'session-item active' : 'session-item')} // Apply active class to session-item div
+                                    key={session.sessionId}
+                                >
+                                    {editingSessionId === session.sessionId ? (
+                                        <input
+                                            type="text"
+                                            value={newSessionName}
+                                            onChange={(e) => setNewSessionName(e.target.value)}
+                                            onBlur={() => handleRenameSession(session.sessionId)}
+                                            onKeyDown={(e) => e.key === 'Enter' && handleRenameSession(session.sessionId)}
+                                            className="session-rename-input"
+                                            autoFocus
+                                        />
+                                    ) : (
+                                        <div onDoubleClick={() => startEditing(session.sessionId, session.sessionName)}>
+                                            <> <span>
+                                                {session.sessionName}
                                             </span>
-                                        </>
-                                    </div>
-                                )}
-                                {
-                                    present && (
-                                        <>
-                                            <span className="ellipsis-icon">
-                                                <button className='edit' onClick={() => sessionEdit(session.sessionId)}>
-                                                    <FontAwesomeIcon icon={faEllipsis} />
-                                                </button>
-                                            </span>
-                                            {isSessionDropdownOpen === session.sessionId && (
-                                                <div className="session-dropdown" ref={dropdownRef}>
-                                                    <ul>
-                                                        <li onClick={() => updatePriority(session.sessionId, session.priority)}>{session.priority ? "Unpin" : "Pin"}</li>
-                                                        <li onClick={() => startEditing(session.sessionId, session.sessionName)}>Rename</li>
-                                                        <li onClick={() => handleDeleteClick(session.sessionId)}>Delete</li>
-                                                        <li onClick={() => exportToTxt(session.sessionId, session.sessionName)}>Export</li>
-                                                    </ul>
-                                                </div>
-                                            )}
-                                        </>
-                                    )
-                                }
-                            </NavLink>
-                        ))}
+                                                <span style={{ marginLeft: "5px" }}>
+                                                    {session.priority && <FontAwesomeIcon icon={faThumbtack} />}
+                                                </span>
+                                            </>
+                                        </div>
+                                    )}
+                                    {
+                                        present && (
+                                            <>
+                                                <span className="ellipsis-icon">
+                                                    <button className='edit' onClick={() => sessionEdit(session.sessionId)}>
+                                                        <FontAwesomeIcon icon={faEllipsis} />
+                                                    </button>
+                                                </span>
+                                                {isSessionDropdownOpen === session.sessionId && (
+                                                    <div className="session-dropdown" ref={dropdownRef}>
+                                                        <ul>
+                                                            <li onClick={() => updatePriority(session.sessionId, session.priority)}>{session.priority ? "Unpin" : "Pin"}</li>
+                                                            <li onClick={() => startEditing(session.sessionId, session.sessionName)}>Rename</li>
+                                                            <li onClick={() => handleDeleteClick(session.sessionId)}>Delete</li>
+                                                            <li onClick={() => exportToTxt(session.sessionId, session.sessionName)}>Export</li>
+                                                        </ul>
+                                                    </div>
+                                                )}
+                                            </>
+                                        )
+                                    }
+                                </NavLink>
+                            ))}
+                        </div>
                     </nav>
                 }
             </div>

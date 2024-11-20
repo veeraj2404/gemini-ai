@@ -80,6 +80,13 @@
     background-color: rgb(57, 59, 57);
 }
 
+.session-content {
+    max-height: calc(100vh - 148px);
+    overflow-y: auto;
+    scrollbar-color: #888 rgb(57, 59, 57);
+}
+
+
 /* Main content adjustments */
 .main-content {
     margin-left: 0;
