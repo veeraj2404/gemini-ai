@@ -81,7 +81,7 @@
 }
 
 .session-content {
-    max-height: calc(100vh - 148px);
+    height: calc(100vh - 148px);
     overflow-y: auto;
     scrollbar-color: #888 rgb(57, 59, 57);
 }
