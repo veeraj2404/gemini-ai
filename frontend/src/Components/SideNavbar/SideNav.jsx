@@ -56,7 +56,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
             }
         };
         fetchSession();
-    }, [setSessions, token, userId, isModalOpen]);
+    }, [setSessions, token, userId, isModalOpen, setUntitledSession]);
 
     // Close dropdown when clicking outside
     useEffect(() => {
