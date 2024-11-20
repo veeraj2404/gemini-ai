@@ -6,8 +6,8 @@ import { faBars, faPenToSquare, faEllipsis, faUser, faThumbtack } from '@fortawe
 import './SideNav.css';
 import * as service from './SideNavService';
 import { getChat } from '../TextGenerator/TextGeneratorService.js';
-import { getUser } from '../Setting/Settings.js'
-import Settings from '../Setting/Settings.jsx';
+import { getUser } from '../Profile/ProfileService.js'
+import Profile from '../Profile/Profile.jsx';
 import $ from 'jquery';
 
 export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions, setSessions, untitledSession, setUntitledSession }) {
@@ -22,7 +22,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
     const [isSessionDropdownOpen, setSessionDropdownOpen] = useState(null); // State to manage dropdown visibility
     const dropdownRef = useRef(null);
     const [isModalOpen, setModalOpen] = useState(false); // Controls modal visibility
-    const [isSettingOpen, setSettingOpen] = useState(false); // Controls settings visibility
+    const [isProfileOpen, setProfileOpen] = useState(false); // Controls settings visibility
     const [editingSessionId, setEditingSessionId] = useState(null);
     const [newSessionName, setNewSessionName] = useState("");
     const [present, setPresent] = useState(true)
@@ -85,7 +85,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
         setDropdownOpen(false)
         setSessionDropdownOpen(null)
         setModalOpen(false)
-        setSettingOpen(false)
+        setProfileOpen(false)
         setEditingSessionId(null)
         setNewSessionName("")
         setPresent(true)
@@ -143,7 +143,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
 
     const handleProfile = () => {
         setDropdownOpen(false)
-        setSettingOpen(true)
+        setProfileOpen(true)
     }
 
     const handleDeleteClick = (sessionId) => {
@@ -386,9 +386,9 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                 </div>
             )}
 
-            {/* Settings Modal */}
-            {isSettingOpen && (
-                <Settings setSettingOpen={setSettingOpen} />
+            {/* Profile Modal */}
+            {isProfileOpen && (
+                <Profile setProfileOpen={setProfileOpen} />
             )}
 
 

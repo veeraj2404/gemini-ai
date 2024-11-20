@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import './Settings.css';
+import './Profile.css';
 import profile from '../../Assets/profile.jpg';
-import * as service from './Settings';
+import * as service from './ProfileService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 
-export default function Settings({ setSettingOpen }) {
+export default function Profile({ setProfileOpen }) {
     const userId = localStorage.getItem('userId');
     const [message, setMessage] = useState('');
 
@@ -38,7 +38,7 @@ export default function Settings({ setSettingOpen }) {
 
 
     const setModalOpen = () => {
-        setSettingOpen(false)
+        setProfileOpen(false)
     }
 
     const save = async () => {
@@ -97,7 +97,7 @@ export default function Settings({ setSettingOpen }) {
             <div className="modal-dialog" role="document">
                 <div className="modal-content">
                     <div className="modal-header heading">
-                        <h5 className="modal-title">Settings</h5>
+                        <h5 className="modal-title">Profile</h5>
 
                     </div>
                     <div className="modal-body content-body">
