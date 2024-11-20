@@ -40,6 +40,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                     const indexedData = data.map((session, index) => ({
                         ...session,
                         originalIndex: index, // Add original index to each session
+                        present: true
                     }));
                     setSessions(indexedData || []);
 
@@ -324,6 +325,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                                     )}
                                     {
                                         present && (
+                                            session.present && 
                                             <>
                                                 <span className="ellipsis-icon">
                                                     <button className='edit' onClick={() => sessionEdit(session.sessionId)}>
