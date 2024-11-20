@@ -36,6 +36,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
 
                     if (data.length === 0) {
                         setPresent(false)
+                        setUntitledSession(false)
                     }
                     const indexedData = data.map((session, index) => ({
                         ...session,
