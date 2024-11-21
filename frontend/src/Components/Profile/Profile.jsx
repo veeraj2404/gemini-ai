@@ -108,7 +108,7 @@ export default function Profile({ setProfileOpen }) {
                             </div>
                             <div className="input-group">
                                 <span className="input-group-text" >Email</span>
-                                <input value={email} onChange={(e) => setEmail(e.target.value)} type="text" className="form-control" />
+                                <input value={email} type="text" className="form-control" />
                             </div>
                             <div className="input-group">
                                 <span className="input-group-text" >Old Pass</span>
