@@ -76,7 +76,6 @@
 /* Chat message styling */
 .message {
     padding: 10px 15px;
-    border-radius: 15px;
     max-width: 70%;
     margin-bottom: 15px;
     word-wrap: break-word;

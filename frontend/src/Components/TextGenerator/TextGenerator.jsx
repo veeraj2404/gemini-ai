@@ -149,7 +149,7 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
                                         return <img src={data} style={{ maxWidth: "100%", height: "auto", borderRadius: "15px 15px 0 15px" }} alt="Uploaded content" />;
                                     })()
                                 ) : (
-                                    <span>{message.text}</span>
+                                    <div style={{ whiteSpace: "pre-wrap" }}>{message.text}</div>
                                 )}
 
                             </div>
