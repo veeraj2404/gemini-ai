@@ -327,7 +327,6 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
 
                             {/* Conditionally render the folder's contents */}
                             {isKnowledgeFolderOpen && (
-                                <div className="collapsible-folder">
                                     <div className="session-content">
                                         {sessions.slice().map((session) => (
                                             <NavLink
@@ -443,7 +442,6 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                                             </NavLink>
                                         ))}
                                     </div>
-                                </div>
                             )}
                         </div>
                         {/* Collapsible folder ends here */}
@@ -466,7 +464,6 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
 
                             {/* Conditionally render the folder's contents */}
                             {isCreativeFolderOpen && (
-                                <div className="collapsible-folder">
                                     <div className="session-content">
                                         {sessions.slice().map((session) => (
                                             <NavLink
@@ -582,7 +579,6 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                                             </NavLink>
                                         ))}
                                     </div>
-                                </div>
                             )}
                         </div>
                         {/* Collapsible folder ends here */}
