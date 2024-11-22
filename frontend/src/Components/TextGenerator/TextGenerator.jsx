@@ -170,6 +170,8 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
                             className="form-control input-query"
                             placeholder="Type your message..."
                             value={input}
+                            id="prompt"
+                            name="inputvalue"
                             onChange={(e) => setInput(e.target.value)}
                         />
                         {/* Hidden file input */}

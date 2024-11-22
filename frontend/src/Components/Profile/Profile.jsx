@@ -104,15 +104,15 @@ export default function Profile({ setProfileOpen }) {
                         <div className="left-content">
                             <div className="input-group">
                                 <span className="input-group-text" >Username</span>
-                                <input value={username} onChange={(e) => setUsername(e.target.value)} type="text" className="form-control" />
+                                <input id='username' name='username' autoComplete='true' value={username} onChange={(e) => setUsername(e.target.value)} type="text" className="form-control" />
                             </div>
                             <div className="input-group">
                                 <span className="input-group-text" >Email</span>
-                                <input value={email} type="text" className="form-control" />
+                                <input id='email' name='email' autoComplete='true' readOnly value={email} type="text" className="form-control" />
                             </div>
                             <div className="input-group">
                                 <span className="input-group-text" >Old Pass</span>
-                                <input value={oldPass} onChange={(e) => setOldPass(e.target.value)} type={showPassword ? 'text' : 'password'} className="form-control" />
+                                <input id='oldPass' name='oldPass' value={oldPass} onChange={(e) => setOldPass(e.target.value)} type={showPassword ? 'text' : 'password'} className="form-control" />
                                 <button
                                     type="button"
                                     onMouseDown={() => setShowPassword(true)}
@@ -125,7 +125,7 @@ export default function Profile({ setProfileOpen }) {
                             </div>
                             <div className="input-group">
                                 <span className="input-group-text" >New Pass</span>
-                                <input value={newPass} onChange={(e) => setNewPass(e.target.value)} type={showNewPassword ? 'text' : 'password'} className="form-control" />
+                                <input id='newPass' name='newPass' value={newPass} onChange={(e) => setNewPass(e.target.value)} type={showNewPassword ? 'text' : 'password'} className="form-control" />
                                 <button
                                     type="button"
                                     onMouseDown={() => setShowNewPassword(true)}
@@ -138,7 +138,7 @@ export default function Profile({ setProfileOpen }) {
                             </div>
                             <div className="input-group">
                                 <span className="input-group-text" >Confirm Pass</span>
-                                <input value={confirmNewPass} onChange={(e) => setConfirmNewPass(e.target.value)} type={showConfirmPassword ? 'text' : 'password'} className="form-control" />
+                                <input id='confirmNewPass' name='confirmNewPass' value={confirmNewPass} onChange={(e) => setConfirmNewPass(e.target.value)} type={showConfirmPassword ? 'text' : 'password'} className="form-control" />
                                 <button
                                     type="button"
                                     onMouseDown={() => setShowConfirmPassword(true)}
@@ -153,7 +153,7 @@ export default function Profile({ setProfileOpen }) {
                         </div>
                         <div className="right-content img-upload">
                             <img src={preview} className="rounded float-end" alt="Profile" />
-                            <input type="file" id="file-input" accept="image/*" onChange={previewImage} />
+                            <input name='previewImage' type="file" id="file-input" accept="image/*" onChange={previewImage} />
                         </div>
                     </div>
                     <div className="modal-footer footer-content">
