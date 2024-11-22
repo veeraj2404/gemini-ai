@@ -64,17 +64,18 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setDropdownOpen(false); // Close the dropdown
                 setSessionDropdownOpen(null)
+                setFilteredSessions([])
             }
         };
 
-        if (isDropdownOpen || isSessionDropdownOpen) {
+        if (isDropdownOpen || isSessionDropdownOpen || filteredSessions) {
             document.addEventListener('mousedown', handleClickOutside); // Listen for outside clicks
         }
 
         return () => {
             document.removeEventListener('mousedown', handleClickOutside); // Cleanup event listener
         };
-    }, [isDropdownOpen, isSessionDropdownOpen]);
+    }, [isDropdownOpen, isSessionDropdownOpen, filteredSessions]);
 
     const toggleDropdown = () => {
         setDropdownOpen(prev => !prev);
@@ -285,7 +286,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                         </div>
 
                         {filteredSessions.length > 0 && (
-                            <div className="search-bar-menu show">
+                            <div className="search-bar-menu show"  ref={dropdownRef}>
                                 <ul>
                                     {filteredSessions.map(session => (
                                         <li onClick={() => navigateFromSearchBar(session.sessionId)} key={session.sessionId}>
