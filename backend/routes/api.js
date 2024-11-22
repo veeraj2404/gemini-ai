@@ -49,6 +49,7 @@ router.post('/imagecontent', upload.single('file'), async (req, res) => {
         // Generate content based on the uploaded image
         const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
         const result = await model.generateContent([
+            "Tell me about this image.",
             {
                 fileData: {
                     fileUri: uploadResult.file.uri,
