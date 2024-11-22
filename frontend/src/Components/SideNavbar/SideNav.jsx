@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faPenToSquare, faEllipsis, faUser, faThumbtack } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faPenToSquare, faEllipsis, faUser, faThumbtack, faAngleUp, faAngleDown, faMessage, faPhotoFilm } from '@fortawesome/free-solid-svg-icons';
 import './SideNav.css';
 import * as service from './SideNavService';
 import { getChat } from '../TextGenerator/TextGeneratorService.js';
@@ -16,6 +16,8 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
 
+    const [isKnowledgeFolderOpen, setKnowledgeFolderOpen] = useState(true); // State to control knowledge folder collapse
+    const [isCreativeFolderOpen, setCreativeFolderOpen] = useState(false); // State to control creative folder collapse
     const [preview, setPreview] = useState('');
     const [filteredSessions, setFilteredSessions] = useState([]);
     const [isDropdownOpen, setDropdownOpen] = useState(false); // State to manage dropdown visibility
@@ -103,12 +105,20 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
     const createNewSession = () => {
         if (untitledSession) {
             let newSessionId = present ? Math.max(...sessions.map(session => session.sessionId)) + 1 : 1;
-            navigate(`/textgenerator/session/${newSessionId}`);
+            navigate(`/textgenerator/${newSessionId}`);
             onNewSession(newSessionId, present); // Notify the parent to update the current session
-            setUntitledSession(false)
+            // setUntitledSession(false)
             return
         }
         toast.warning("New Session is already Present")
+    };
+
+    const toggleKnowledge = () => {
+        setKnowledgeFolderOpen((prev) => !prev); // Toggle the folder open/close state
+    };
+
+    const toggleCreative = () => {
+        setCreativeFolderOpen((prev) => !prev); // Toggle the folder open/close state
     };
 
     const startEditing = (sessionId, currentName) => {
@@ -215,7 +225,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
     }
 
     const navigateFromSearchBar = (id) => {
-        navigate(`/textgenerator/session/${id}`);
+        navigate(`/textgenerator/${id}`);
         setFilteredSessions([])
         $('#searchBar').val('');
     }
@@ -287,7 +297,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                         </div>
 
                         {filteredSessions.length > 0 && (
-                            <div className="search-bar-menu show"  ref={dropdownRef}>
+                            <div className="search-bar-menu show" ref={dropdownRef}>
                                 <ul>
                                     {filteredSessions.map(session => (
                                         <li onClick={() => navigateFromSearchBar(session.sessionId)} key={session.sessionId}>
@@ -297,60 +307,285 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                                 </ul>
                             </div>
                         )}
-                        <span><h6 className='chatSession'>Gemini-AI</h6></span>
-                        <div className='session-content'>
-                            {sessions.slice().map(session => (
-                                <NavLink
-                                    to={`/textgenerator/session/${session.sessionId}`}
-                                    className={({ isActive }) => (isActive ? 'session-item active' : 'session-item')} // Apply active class to session-item div
-                                    key={session.sessionId}
-                                >
-                                    {editingSessionId === session.sessionId ? (
-                                        <input
-                                            type="text"
-                                            value={newSessionName}
-                                            onChange={(e) => setNewSessionName(e.target.value)}
-                                            onBlur={() => handleRenameSession(session.sessionId)}
-                                            onKeyDown={(e) => e.key === 'Enter' && handleRenameSession(session.sessionId)}
-                                            className="session-rename-input"
-                                            autoFocus
-                                        />
-                                    ) : (
-                                        <div onDoubleClick={() => startEditing(session.sessionId, session.sessionName)}>
-                                            <> <span>
-                                                {session.sessionName}
-                                            </span>
-                                                <span style={{ marginLeft: "5px" }}>
-                                                    {session.priority && <FontAwesomeIcon icon={faThumbtack} />}
-                                                </span>
-                                            </>
-                                        </div>
-                                    )}
-                                    {
-                                        present && (
-                                            session.present && 
-                                            <>
-                                                <span className="ellipsis-icon">
-                                                    <button className='edit' onClick={() => sessionEdit(session.sessionId)}>
-                                                        <FontAwesomeIcon icon={faEllipsis} />
-                                                    </button>
-                                                </span>
-                                                {isSessionDropdownOpen === session.sessionId && (
-                                                    <div className="session-dropdown" ref={dropdownRef}>
-                                                        <ul>
-                                                            <li onClick={() => updatePriority(session.sessionId, session.priority)}>{session.priority ? "Unpin" : "Pin"}</li>
-                                                            <li onClick={() => startEditing(session.sessionId, session.sessionName)}>Rename</li>
-                                                            <li onClick={() => handleDeleteClick(session.sessionId)}>Delete</li>
-                                                            <li onClick={() => downloadChatPdf(session.sessionId, session.sessionName)}>Export</li>
-                                                        </ul>
+                        <span><h6 className='chatSession'>Klaus-AI</h6></span>
+
+                        {/* Collapsible folder starts here */}
+                        <div className="folder-container mb-2">
+                            <button
+                                className={`btn btn-secondary folder-btn ${isKnowledgeFolderOpen ? 'open' : ''}`}
+                                type="button"
+                                onClick={toggleKnowledge}
+                            >
+                                <div>
+                                    <FontAwesomeIcon icon={faMessage} style={{ marginRight: "3px" }} />
+                                    Knowledge
+                                </div>
+                                <span className="folder-icon">
+                                    <FontAwesomeIcon icon={isKnowledgeFolderOpen ? faAngleUp : faAngleDown} />
+                                </span>
+                            </button>
+
+                            {/* Conditionally render the folder's contents */}
+                            {isKnowledgeFolderOpen && (
+                                <div className="collapsible-folder">
+                                    <div className="session-content">
+                                        {sessions.slice().map((session) => (
+                                            <NavLink
+                                                to={`/textgenerator/${session.sessionId}`}
+                                                className={({ isActive }) =>
+                                                    isActive ? "session-item active" : "session-item"
+                                                } // Apply active class to session-item div
+                                                key={session.sessionId}
+                                            >
+                                                {editingSessionId === session.sessionId ? (
+                                                    <input
+                                                        type="text"
+                                                        value={newSessionName}
+                                                        onChange={(e) =>
+                                                            setNewSessionName(e.target.value)
+                                                        }
+                                                        onBlur={() =>
+                                                            handleRenameSession(session.sessionId)
+                                                        }
+                                                        onKeyDown={(e) =>
+                                                            e.key === "Enter" &&
+                                                            handleRenameSession(session.sessionId)
+                                                        }
+                                                        className="session-rename-input"
+                                                        autoFocus
+                                                    />
+                                                ) : (
+                                                    <div
+                                                        onDoubleClick={() =>
+                                                            startEditing(
+                                                                session.sessionId,
+                                                                session.sessionName
+                                                            )
+                                                        }
+                                                    >
+                                                        <>
+                                                            <span style={{ marginRight: "5px" }}>
+                                                                {session.priority && (
+                                                                    <FontAwesomeIcon
+                                                                        icon={faThumbtack}
+                                                                    />
+                                                                )}
+                                                            </span>
+                                                            <span>{session.sessionName}</span>
+                                                        </>
                                                     </div>
                                                 )}
-                                            </>
-                                        )
-                                    }
-                                </NavLink>
-                            ))}
+                                                {present && session.present && (
+                                                    <>
+                                                        <span className="ellipsis-icon">
+                                                            <button
+                                                                className="edit"
+                                                                onClick={() =>
+                                                                    sessionEdit(session.sessionId)
+                                                                }
+                                                            >
+                                                                <FontAwesomeIcon icon={faEllipsis} />
+                                                            </button>
+                                                        </span>
+                                                        {isSessionDropdownOpen ===
+                                                            session.sessionId && (
+                                                                <div
+                                                                    className="session-dropdown"
+                                                                    ref={dropdownRef}
+                                                                >
+                                                                    <ul>
+                                                                        <li
+                                                                            onClick={() =>
+                                                                                updatePriority(
+                                                                                    session.sessionId,
+                                                                                    session.priority
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            {session.priority
+                                                                                ? "Unpin"
+                                                                                : "Pin"}
+                                                                        </li>
+                                                                        <li
+                                                                            onClick={() =>
+                                                                                startEditing(
+                                                                                    session.sessionId,
+                                                                                    session.sessionName
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            Rename
+                                                                        </li>
+                                                                        <li
+                                                                            onClick={() =>
+                                                                                handleDeleteClick(
+                                                                                    session.sessionId
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            Delete
+                                                                        </li>
+                                                                        <li
+                                                                            onClick={() =>
+                                                                                downloadChatPdf(
+                                                                                    session.sessionId,
+                                                                                    session.sessionName
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            Export
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            )}
+                                                    </>
+                                                )}
+                                            </NavLink>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
+                        {/* Collapsible folder ends here */}
+
+                        {/* Collapsible folder starts here */}
+                        <div className="folder-container">
+                            <button
+                                className={`btn btn-secondary folder-btn ${isCreativeFolderOpen ? 'open' : ''}`}
+                                type="button"
+                                onClick={toggleCreative}
+                            >
+                                <div>
+                                    <FontAwesomeIcon icon={faPhotoFilm} style={{ marginRight: "3px" }} />
+                                    Creative
+                                </div>
+                                <span className="folder-icon">
+                                    <FontAwesomeIcon icon={isCreativeFolderOpen ? faAngleUp : faAngleDown} />
+                                </span>
+                            </button>
+
+                            {/* Conditionally render the folder's contents */}
+                            {isCreativeFolderOpen && (
+                                <div className="collapsible-folder">
+                                    <div className="session-content">
+                                        {sessions.slice().map((session) => (
+                                            <NavLink
+                                                to={`/textgenerator/${session.sessionId}`}
+                                                className={({ isActive }) =>
+                                                    isActive ? "session-item active" : "session-item"
+                                                } // Apply active class to session-item div
+                                                key={session.sessionId}
+                                            >
+                                                {editingSessionId === session.sessionId ? (
+                                                    <input
+                                                        type="text"
+                                                        value={newSessionName}
+                                                        onChange={(e) =>
+                                                            setNewSessionName(e.target.value)
+                                                        }
+                                                        onBlur={() =>
+                                                            handleRenameSession(session.sessionId)
+                                                        }
+                                                        onKeyDown={(e) =>
+                                                            e.key === "Enter" &&
+                                                            handleRenameSession(session.sessionId)
+                                                        }
+                                                        className="session-rename-input"
+                                                        autoFocus
+                                                    />
+                                                ) : (
+                                                    <div
+                                                        onDoubleClick={() =>
+                                                            startEditing(
+                                                                session.sessionId,
+                                                                session.sessionName
+                                                            )
+                                                        }
+                                                    >
+                                                        <>
+                                                            <span style={{ marginRight: "5px" }}>
+                                                                {session.priority && (
+                                                                    <FontAwesomeIcon
+                                                                        icon={faThumbtack}
+                                                                    />
+                                                                )}
+                                                            </span>
+                                                            <span>{session.sessionName}</span>
+                                                        </>
+                                                    </div>
+                                                )}
+                                                {present && session.present && (
+                                                    <>
+                                                        <span className="ellipsis-icon">
+                                                            <button
+                                                                className="edit"
+                                                                onClick={() =>
+                                                                    sessionEdit(session.sessionId)
+                                                                }
+                                                            >
+                                                                <FontAwesomeIcon icon={faEllipsis} />
+                                                            </button>
+                                                        </span>
+                                                        {isSessionDropdownOpen ===
+                                                            session.sessionId && (
+                                                                <div
+                                                                    className="session-dropdown"
+                                                                    ref={dropdownRef}
+                                                                >
+                                                                    <ul>
+                                                                        <li
+                                                                            onClick={() =>
+                                                                                updatePriority(
+                                                                                    session.sessionId,
+                                                                                    session.priority
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            {session.priority
+                                                                                ? "Unpin"
+                                                                                : "Pin"}
+                                                                        </li>
+                                                                        <li
+                                                                            onClick={() =>
+                                                                                startEditing(
+                                                                                    session.sessionId,
+                                                                                    session.sessionName
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            Rename
+                                                                        </li>
+                                                                        <li
+                                                                            onClick={() =>
+                                                                                handleDeleteClick(
+                                                                                    session.sessionId
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            Delete
+                                                                        </li>
+                                                                        <li
+                                                                            onClick={() =>
+                                                                                downloadChatPdf(
+                                                                                    session.sessionId,
+                                                                                    session.sessionName
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            Export
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            )}
+                                                    </>
+                                                )}
+                                            </NavLink>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        {/* Collapsible folder ends here */}
                     </nav>
                 }
             </div>

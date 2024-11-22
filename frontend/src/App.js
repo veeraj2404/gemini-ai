@@ -47,7 +47,7 @@ function App() {
     if (token && sessions.length > 0) {
       // If the token exists, redirect to TextGenerator
       const id = Math.max(...sessions.map(session => session.sessionId));
-      navigate(`/textgenerator/session/${id}`);
+      navigate(`/textgenerator/${id}`);
     }
   }, [handleNewSession, sessions]);
 
@@ -58,7 +58,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginSignup />} />
         <Route path="/loginsignup" element={<LoginSignup />} />
-        <Route path="/textgenerator/session/:sessionId" element={<TextGenerator untitledSession={untitledSession} setUntitledSession={setUntitledSession} />} /> {/* Route for session */}
+        <Route path="/textgenerator/:sessionId" element={<TextGenerator untitledSession={untitledSession} setUntitledSession={setUntitledSession} />} /> {/* Route for session */}
         <Route path="/textgenerator" element={<TextGenerator />} />
       </Routes>
     </div>
