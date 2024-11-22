@@ -220,8 +220,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
         $('#searchBar').val('');
     }
 
-    const exportToTxt = async (id, name) => {
-        console.log("start")
+    const downloadChatPdf = async (id, name) => {
         try {
             const chat = await getChat(id, userId)
             const response = await service.downloadChatPdf(name, chat.chat);
@@ -235,6 +234,8 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
             link.parentNode.removeChild(link);
         } catch (error) {
             console.error('Error downloading PDF:', error);
+        } finally {
+            setSessionDropdownOpen(null)
         }
     }
 
@@ -340,7 +341,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                                                             <li onClick={() => updatePriority(session.sessionId, session.priority)}>{session.priority ? "Unpin" : "Pin"}</li>
                                                             <li onClick={() => startEditing(session.sessionId, session.sessionName)}>Rename</li>
                                                             <li onClick={() => handleDeleteClick(session.sessionId)}>Delete</li>
-                                                            <li onClick={() => exportToTxt(session.sessionId, session.sessionName)}>Export</li>
+                                                            <li onClick={() => downloadChatPdf(session.sessionId, session.sessionName)}>Export</li>
                                                         </ul>
                                                     </div>
                                                 )}

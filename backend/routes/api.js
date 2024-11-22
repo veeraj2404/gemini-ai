@@ -332,41 +332,45 @@ router.get('/generate-pdf', async (req, res) => {
         const lineHeight = 20;
         const margin = 50;
 
-        // Function to wrap text with a max width
-        const wrapText = (text, maxWidth) => {
-            const words = text.split(' ');
-            const lines = [];
-            let currentLine = '';
+        // Function to wrap text with a max width and handle line breaks (`\n`)
+        const wrapTextWithLineBreaks = (text, maxWidth) => {
+            const paragraphs = text.split('\n'); // Split by line breaks
+            const wrappedLines = [];
 
-            words.forEach((word) => {
-                const testLine = currentLine + word + ' ';
-                const testWidth = customFont.widthOfTextAtSize(testLine, 12);
-                if (testWidth > maxWidth && currentLine !== '') {
-                    lines.push(currentLine.trim());
-                    currentLine = word + ' ';
-                } else {
-                    currentLine = testLine;
+            paragraphs.forEach((paragraph) => {
+                const words = paragraph.split(' '); // Split paragraph into words
+                let currentLine = '';
+
+                words.forEach((word) => {
+                    const testLine = currentLine + word + ' ';
+                    const testWidth = customFont.widthOfTextAtSize(testLine, 12);
+                    if (testWidth > maxWidth && currentLine !== '') {
+                        wrappedLines.push(currentLine.trim());
+                        currentLine = word + ' ';
+                    } else {
+                        currentLine = testLine;
+                    }
+                });
+
+                if (currentLine) {
+                    wrappedLines.push(currentLine.trim());
                 }
             });
 
-            if (currentLine) {
-                lines.push(currentLine.trim());
-            }
-
-            return lines;
+            return wrappedLines;
         };
 
         // Function to add chat message with sender name and dynamic text styling
         const addMessage = (sender, text, isBot = false) => {
             const senderText = `${sender}: `;
-            const lines = wrapText(senderText + text, width - margin * 2);
+            const lines = wrapTextWithLineBreaks(senderText + text, width - margin * 2);
 
-            lines.forEach((line, index) => {
+            lines.forEach((line) => {
                 if (yPosition < 50) {
                     page = pdfDoc.addPage([600, 800]);
                     yPosition = height - 50;
                 }
-                
+
                 // Apply different colors for user and bot
                 const senderColor = isBot ? rgb(0, 0, 1) : rgb(0, 0, 0); // Blue for bot, black for user
                 page.drawText(line, {
@@ -399,5 +403,6 @@ router.get('/generate-pdf', async (req, res) => {
         res.status(500).json({ message: 'Error generating PDF' });
     }
 });
+
 
 module.exports = router;
