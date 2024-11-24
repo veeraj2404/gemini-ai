@@ -56,9 +56,10 @@ export default function LoginSignup() {
     <div className="login-signup-container">
       <form className="login-signup-form" onSubmit={handleSubmit}>
         <h2>{isSignUp ? 'Sign Up' : 'Login'}</h2>
-        {error && <p className="error-message" style={{color: "red"}}>{error}</p>}
+        {error && <p className="error-message" style={{ color: "red" }}>{error}</p>}
         {isSignUp && (
           <input
+            className='inputfield'
             type="text"
             placeholder="Username"
             value={username}
@@ -66,6 +67,7 @@ export default function LoginSignup() {
             required
           />)}
         <input
+          className='inputfield'
           type="email"
           placeholder="Email"
           value={email}
@@ -73,6 +75,7 @@ export default function LoginSignup() {
           required
         />
         <input
+          className='inputfield'
           type="password"
           placeholder="Password"
           value={password}
@@ -81,6 +84,7 @@ export default function LoginSignup() {
         />
         {isSignUp && (
           <input
+            className='inputfield'
             type="password"
             placeholder="Confirm Password"
             value={confirmPassword}

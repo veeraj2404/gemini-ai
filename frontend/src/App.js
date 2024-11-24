@@ -4,6 +4,7 @@ import TextGenerator from './Components/TextGenerator/TextGenerator';
 import SideNav from './Components/SideNavbar/SideNav';
 import { useCallback, useEffect, useState } from 'react';
 import LoginSignup from './Components/Login/LoginSignup';
+import Home from './Components/Home/Home';
 
 function App() {
   const navigate = useNavigate();
@@ -52,11 +53,11 @@ function App() {
   }, [handleNewSession, sessions]);
 
   return (
-
+    
     <div className="app-container ">
       <SideNav isOpen={isSideNavOpen} toggleSideNav={toggleSideNav} onNewSession={handleNewSession} sessions={sessions} setSessions={setSessions} untitledSession={untitledSession} setUntitledSession={setUntitledSession} />
       <Routes>
-        <Route path="/" element={<LoginSignup />} />
+        <Route path="/" element={<Home />} />
         <Route path="/loginsignup" element={<LoginSignup />} />
         <Route path="/textgenerator/:sessionId" element={<TextGenerator untitledSession={untitledSession} setUntitledSession={setUntitledSession} />} /> {/* Route for session */}
         <Route path="/textgenerator" element={<TextGenerator />} />

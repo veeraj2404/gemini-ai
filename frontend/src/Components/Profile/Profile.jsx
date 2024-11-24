@@ -102,17 +102,17 @@ export default function Profile({ setProfileOpen }) {
                     </div>
                     <div className="modal-body content-body">
                         <div className="left-content">
-                            <div className="input-group">
+                            <div className="input-group mb-2">
                                 <span className="input-group-text" >Username</span>
                                 <input id='username' name='username' autoComplete='true' value={username} onChange={(e) => setUsername(e.target.value)} type="text" className="form-control" />
                             </div>
-                            <div className="input-group">
+                            <div className="input-group mb-2">
                                 <span className="input-group-text" >Email</span>
                                 <input id='email' name='email' autoComplete='true' readOnly value={email} type="text" className="form-control" />
                             </div>
-                            <div className="input-group">
+                            <div className="input-group mb-2">
                                 <span className="input-group-text" >Old Pass</span>
-                                <input id='oldPass' name='oldPass' value={oldPass} onChange={(e) => setOldPass(e.target.value)} type={showPassword ? 'text' : 'password'} className="form-control" />
+                                <input style={{ borderTopRightRadius: ".375rem", borderBottomRightRadius: ".375rem"}} id='oldPass' name='oldPass' value={oldPass} onChange={(e) => setOldPass(e.target.value)} type={showPassword ? 'text' : 'password'} className="form-control" />
                                 <button
                                     type="button"
                                     onMouseDown={() => setShowPassword(true)}
@@ -123,9 +123,9 @@ export default function Profile({ setProfileOpen }) {
                                     {showPassword ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}
                                 </button>
                             </div>
-                            <div className="input-group">
+                            <div className="input-group mb-2">
                                 <span className="input-group-text" >New Pass</span>
-                                <input id='newPass' name='newPass' value={newPass} onChange={(e) => setNewPass(e.target.value)} type={showNewPassword ? 'text' : 'password'} className="form-control" />
+                                <input style={{ borderTopRightRadius: ".375rem", borderBottomRightRadius: ".375rem"}} id='newPass' name='newPass' value={newPass} onChange={(e) => setNewPass(e.target.value)} type={showNewPassword ? 'text' : 'password'} className="form-control" />
                                 <button
                                     type="button"
                                     onMouseDown={() => setShowNewPassword(true)}
@@ -136,9 +136,9 @@ export default function Profile({ setProfileOpen }) {
                                     {showNewPassword ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}
                                 </button>
                             </div>
-                            <div className="input-group">
+                            <div className="input-group mb-2">
                                 <span className="input-group-text" >Confirm Pass</span>
-                                <input id='confirmNewPass' name='confirmNewPass' value={confirmNewPass} onChange={(e) => setConfirmNewPass(e.target.value)} type={showConfirmPassword ? 'text' : 'password'} className="form-control" />
+                                <input style={{ borderTopRightRadius: ".375rem", borderBottomRightRadius: ".375rem"}} id='confirmNewPass' name='confirmNewPass' value={confirmNewPass} onChange={(e) => setConfirmNewPass(e.target.value)} type={showConfirmPassword ? 'text' : 'password'} className="form-control" />
                                 <button
                                     type="button"
                                     onMouseDown={() => setShowConfirmPassword(true)}

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faPenToSquare, faEllipsis, faUser, faThumbtack, faAngleUp, faAngleDown, faMessage, faPhotoFilm } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faPenToSquare, faEllipsis, faUser, faThumbtack, faAngleUp, faAngleDown, faMessage, faPhotoFilm, faHouse } from '@fortawesome/free-solid-svg-icons';
 import './SideNav.css';
 import * as service from './SideNavService';
 import { getChat } from '../TextGenerator/TextGeneratorService.js';
@@ -102,12 +102,22 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
         navigate('/loginsignup');
     }
 
+    const loginPage = () => {
+        resetState()
+        navigate('/loginsignup');
+    }
+
+    const homePage = () => {
+        resetState()
+        navigate('/');
+    }
+
     const createNewSession = () => {
         if (untitledSession) {
             let newSessionId = present ? Math.max(...sessions.map(session => session.sessionId)) + 1 : 1;
             navigate(`/textgenerator/${newSessionId}`);
             onNewSession(newSessionId, present); // Notify the parent to update the current session
-            // setUntitledSession(false)
+            setUntitledSession(false)
             return
         }
         toast.warning("New Session is already Present")
@@ -257,7 +267,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                         <FontAwesomeIcon icon={faBars} />
                     </button>
                     {
-                        token && (
+                        token ? (
                             <div className="profile-container" ref={dropdownRef}>
                                 <button className={`openedit ${isOpen ? '' : 'bgChange'}`} onClick={createNewSession}>
                                     <FontAwesomeIcon icon={faPenToSquare} />
@@ -284,49 +294,62 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                                     </div>
                                 )}
                             </div>
-                        )
+                        ) :
+                            (
+                                <div className="profile-container" style={{ marginLeft: "-47.5px" }}>
+                                    <button className={`openprofile ${isOpen ? '' : 'bgChange'}`} onClick={loginPage}>
+                                        <FontAwesomeIcon icon={faUser} />
+                                    </button>
+                                </div>
+                            )
                     }
                 </div>
 
                 {
-                    token &&
-                    <nav className={`sidenav my-5 ${isOpen ? 'open' : ''}`}>
-                        <div className="search-bar">
-                            <input onChange={(e) => searchBar(e)} type="text" id='searchBar' className="form-control" placeholder="Search Session" aria-label="session"
-                                style={{ paddingLeft: "12px" }} />
-                        </div>
-
-                        {filteredSessions.length > 0 && (
-                            <div className="search-bar-menu show" ref={dropdownRef}>
-                                <ul>
-                                    {filteredSessions.map(session => (
-                                        <li onClick={() => navigateFromSearchBar(session.sessionId)} key={session.sessionId}>
-                                            {session.sessionName}
-                                        </li>
-                                    ))}
-                                </ul>
+                    token ? (
+                        <nav className={`sidenav my-5 ${isOpen ? 'open' : ''}`}>
+                            <div className="search-bar mb-4">
+                                <input onChange={(e) => searchBar(e)} type="text" id='searchBar' className="form-control" placeholder="Search Session" aria-label="session"
+                                    style={{ paddingLeft: "12px" }} />
                             </div>
-                        )}
-                        <span><h6 className='chatSession'>Klaus-AI</h6></span>
 
-                        {/* Collapsible folder starts here */}
-                        <div className="folder-container mb-2">
-                            <button
-                                className={`btn btn-secondary folder-btn ${isKnowledgeFolderOpen ? 'open' : ''}`}
-                                type="button"
-                                onClick={toggleKnowledge}
-                            >
-                                <div>
-                                    <FontAwesomeIcon icon={faMessage} style={{ marginRight: "3px" }} />
-                                    Knowledge
+                            {filteredSessions.length > 0 && (
+                                <div className="search-bar-menu show" ref={dropdownRef}>
+                                    <ul>
+                                        {filteredSessions.map(session => (
+                                            <li onClick={() => navigateFromSearchBar(session.sessionId)} key={session.sessionId}>
+                                                {session.sessionName}
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </div>
-                                <span className="folder-icon">
-                                    <FontAwesomeIcon icon={isKnowledgeFolderOpen ? faAngleUp : faAngleDown} />
-                                </span>
-                            </button>
+                            )}
+                            <span><h6 className='chatSession'>Klaus-AI</h6></span>
+                            <div className="search-bar mb-1">
+                                <button onClick={homePage} className="homepage">
+                                    <FontAwesomeIcon icon={faHouse} style={{ marginRight: "3px" }}/>
+                                    Home 
+                                </button>
+                            </div>
 
-                            {/* Conditionally render the folder's contents */}
-                            {isKnowledgeFolderOpen && (
+                            {/* Collapsible folder starts here */}
+                            <div className="folder-container mb-2">
+                                <button
+                                    className={`btn btn-secondary folder-btn ${isKnowledgeFolderOpen ? 'open' : ''}`}
+                                    type="button"
+                                    onClick={toggleKnowledge}
+                                >
+                                    <div>
+                                        <FontAwesomeIcon icon={faMessage} style={{ marginRight: "3px" }} />
+                                        Knowledge
+                                    </div>
+                                    <span className="folder-icon">
+                                        <FontAwesomeIcon icon={isKnowledgeFolderOpen ? faAngleUp : faAngleDown} />
+                                    </span>
+                                </button>
+
+                                {/* Conditionally render the folder's contents */}
+                                {isKnowledgeFolderOpen && (
                                     <div className="session-content">
                                         {sessions.slice().map((session) => (
                                             <NavLink
@@ -442,28 +465,28 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                                             </NavLink>
                                         ))}
                                     </div>
-                            )}
-                        </div>
-                        {/* Collapsible folder ends here */}
+                                )}
+                            </div>
+                            {/* Collapsible folder ends here */}
 
-                        {/* Collapsible folder starts here */}
-                        <div className="folder-container">
-                            <button
-                                className={`btn btn-secondary folder-btn ${isCreativeFolderOpen ? 'open' : ''}`}
-                                type="button"
-                                onClick={toggleCreative}
-                            >
-                                <div>
-                                    <FontAwesomeIcon icon={faPhotoFilm} style={{ marginRight: "3px" }} />
-                                    Creative
-                                </div>
-                                <span className="folder-icon">
-                                    <FontAwesomeIcon icon={isCreativeFolderOpen ? faAngleUp : faAngleDown} />
-                                </span>
-                            </button>
+                            {/* Collapsible folder starts here */}
+                            <div className="folder-container">
+                                <button
+                                    className={`btn btn-secondary folder-btn ${isCreativeFolderOpen ? 'open' : ''}`}
+                                    type="button"
+                                    onClick={toggleCreative}
+                                >
+                                    <div>
+                                        <FontAwesomeIcon icon={faPhotoFilm} style={{ marginRight: "3px" }} />
+                                        Creative
+                                    </div>
+                                    <span className="folder-icon">
+                                        <FontAwesomeIcon icon={isCreativeFolderOpen ? faAngleUp : faAngleDown} />
+                                    </span>
+                                </button>
 
-                            {/* Conditionally render the folder's contents */}
-                            {isCreativeFolderOpen && (
+                                {/* Conditionally render the folder's contents */}
+                                {isCreativeFolderOpen && (
                                     <div className="session-content">
                                         {sessions.slice().map((session) => (
                                             <NavLink
@@ -579,10 +602,22 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                                             </NavLink>
                                         ))}
                                     </div>
-                            )}
-                        </div>
-                        {/* Collapsible folder ends here */}
-                    </nav>
+                                )}
+                            </div>
+                            {/* Collapsible folder ends here */}
+                        </nav>
+                    ) : (
+                        <nav className={`sidenav my-5 ${isOpen ? 'open' : ''}`}>
+                            <span><h6 className='chatSession'>Klaus-AI</h6></span>
+
+                            <div className="search-bar">
+                                <button onClick={homePage} className="homepage">
+                                    <FontAwesomeIcon icon={faHouse} style={{ marginRight: "3px" }}/>
+                                    Home 
+                                </button>
+                            </div>
+                        </nav>
+                    )
                 }
             </div>
 

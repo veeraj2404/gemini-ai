@@ -19,8 +19,8 @@ app.use(cors({
     origin: 'http://localhost:3000', // Only allow requests from this origin
 }));
 // Enable CORS for all routes
-app.use(bodyParser.json()); // Parse JSON bodies
-app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use(bodyParser.json({ limit: '10mb' })); // Parse JSON bodies
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true })); // Parse URL-encoded bodies
 
 
 //Route

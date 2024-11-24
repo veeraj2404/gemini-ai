@@ -3,22 +3,25 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
-    background-color: rgb(57, 59, 57);
-    transition: width 0.3s ease-in-out, transform 0.3s ease-in-out; /* Transition added to width and transform */
+    transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+    /* Transition added to width and transform */
     transform: translateX(0);
-    width: calc(100vw); /* Default width when sidenav is closed */
+    width: calc(100vw);
+    /* Default width when sidenav is closed */
 }
 
 /* The side navigation menu */
 
 .main-content {
-    margin-left: 250px;  /* Starts with room for the sidenav */
+    margin-left: 250px;
+    /* Starts with room for the sidenav */
     transition: margin-left 0.3s;
     width: 100%;
 }
 
 .main-content.shifted {
-    margin-left: 0;  /* Shift when sidenav closes */
+    margin-left: 0;
+    /* Shift when sidenav closes */
 }
 
 /* Open button */
@@ -39,7 +42,8 @@
 .chat-container {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 60px); /* Full height minus header */
+    height: calc(100vh - 60px);
+    /* Full height minus header */
     width: 50vw;
 }
 
@@ -51,26 +55,32 @@
     margin-bottom: 10px;
     display: flex;
     flex-direction: column;
-    scrollbar-color: #888 rgb(57, 59, 57); 
+    scrollbar-color: #888 rgb(57, 59, 57);
 }
 
 /* Custom Scrollbar for WebKit Browsers (Chrome, Safari) */
 .chat-box::-webkit-scrollbar {
-    width: 10px; /* Width of the scrollbar */
+    width: 10px;
+    /* Width of the scrollbar */
 }
 
 .chat-box::-webkit-scrollbar-track {
-    background: #f1f1f1; /* Background of the scrollbar track */
-    border-radius: 10px; /* Rounded corners for the track */
+    background: #f1f1f1;
+    /* Background of the scrollbar track */
+    border-radius: 10px;
+    /* Rounded corners for the track */
 }
 
 .chat-box::-webkit-scrollbar-thumb {
-    background: #888; /* Color of the scrollbar thumb */
-    border-radius: 10px; /* Rounded corners for the thumb */
+    background: #888;
+    /* Color of the scrollbar thumb */
+    border-radius: 10px;
+    /* Rounded corners for the thumb */
 }
 
 .chat-box::-webkit-scrollbar-thumb:hover {
-    background: #555; /* Color when hovering over the scrollbar */
+    background: #555;
+    /* Color when hovering over the scrollbar */
 }
 
 /* Chat message styling */
@@ -113,22 +123,31 @@
     transition: background-color 0.3s ease;
 }
 
-.copy-button:hover{
+.copy-button:hover {
     background-color: rgb(85, 89, 85);
 }
 
 .input-box input {
     flex: 1;
-    border: 1px solid rgb(85, 89, 85);
-    border-radius:  0.375rem 0 0  0.375rem;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: none;
+    font-size: 1rem;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 .submit {
-    border-radius: 0  0.375rem  0.375rem 0;
-    border-color: rgb(45, 46, 45);
-    padding: 10px 15px;
+    border-radius: 0 0.375rem 0.375rem 0;
+    border-color: rgba(58, 59, 58, 0.2);
+    border: none;
+    padding: 12px 15px 8px 15px;
     background-color: rgb(45, 46, 45);
     margin-bottom: 15px;
+}
+.submit:hover{
+    background: linear-gradient(rgba(58, 59, 58, 0.2), rgb(45, 46, 45));
+    border: none;
 }
 
 .input-box {
@@ -145,9 +164,9 @@
 }
 
 .input-query {
-    width: 100%;
-    padding: 10px;
-    padding-left: 50px; /* Adds space for the icon inside the input */
+    width: 100% !important;
+    padding: 10px !important;
+    padding-left: 50px !important;
 }
 
 .upload-btn {
@@ -170,7 +189,8 @@
     }
 
     .main-content {
-        margin-left: 0;  /* Disable margin on smaller screens */
+        margin-left: 0;
+        /* Disable margin on smaller screens */
     }
 
     .chat-container {
@@ -178,12 +198,14 @@
     }
 
     .sidenav a {
-        font-size: 22px;  /* Adjust text size for smaller screens */
+        font-size: 22px;
+        /* Adjust text size for smaller screens */
         padding: 12px 20px;
     }
 
     .message {
-        max-width: 90%;  /* Increase max-width for messages on smaller screens */
+        max-width: 90%;
+        /* Increase max-width for messages on smaller screens */
     }
 }
 
@@ -191,7 +213,8 @@
 @media screen and (max-width: 576px) {
     .sidenav {
         width: 100%;
-        transform: translateX(-100%);  /* Completely hide sidenav */
+        transform: translateX(-100%);
+        /* Completely hide sidenav */
     }
 
     .sidenav.open {
@@ -204,11 +227,13 @@
     }
 
     .sidenav a {
-        font-size: 20px;  /* Further adjust text size for small devices */
+        font-size: 20px;
+        /* Further adjust text size for small devices */
         padding: 10px 15px;
     }
 
     .message {
-        max-width: 95%;  /* Further increase max-width for chat messages */
+        max-width: 95%;
+        /* Further increase max-width for chat messages */
     }
 }

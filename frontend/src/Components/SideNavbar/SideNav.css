@@ -40,7 +40,7 @@
     background-color: white;
     color: black;
     border: 1px solid rgb(69, 68, 67);
-    border-radius: 4px;
+    border-radius: .375rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 1000; /* Ensure it's above other content */
     width: 92%;
@@ -64,8 +64,8 @@
 }
 
 .search-bar-menu ul li:hover{
-    background-color: #d6d4d4;
-    border-radius: 4px;
+    background-color: #b7b6b6;
+    border-radius: .375rem;
 }
 
 .sidenav a {
@@ -214,9 +214,9 @@
     position: absolute;
     top: 40px; /* Adjust this to position it below the openprofile button */
     right: 0;
-    background-color: rgb(69, 68, 67);
-    border: 1px solid rgb(69, 68, 67);
-    border-radius: 4px;
+    background-color: rgb(45, 46, 45);    
+    border: 1px solid rgb(45, 46, 45);
+    border-radius: .375rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 1000; /* Ensure it's above other content */
     width: 150px;
@@ -253,8 +253,8 @@
 }
 
 .dropdown-menu ul li:hover {
-    background-color: rgb(45, 46, 45);    
-    border-radius: 12px;
+    background-color: rgb(69, 68, 67);
+    border-radius: .375rem;
     transition: background-color 0.3s ease;
     overflow: hidden;  
 }
@@ -380,6 +380,20 @@
 
 .folder-item:hover {
     background-color: rgb(57, 59, 57);
+}
+
+.homepage{
+    width: 100%;
+    background-color: rgb(45, 46, 45);
+    border: none;
+    color: white;
+    text-align: left;
+    padding: 10px 15px;
+}
+
+.homepage:hover {
+    background-color: rgba(163, 172, 178, 0.2);
+    border-radius: .375rem;
 }
 
 

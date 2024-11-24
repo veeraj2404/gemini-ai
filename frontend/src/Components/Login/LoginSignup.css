@@ -1,110 +1,118 @@
 /* General styles for the form */
 .login-signup-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: rgb(57, 59, 57);
-    transition: width 0.3s ease-in-out, transform 0.3s ease-in-out; /* Transition added to width and transform */
-    transform: translateX(0);
-    width: calc(100vw);
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: rgb(57, 59, 57);
+  transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+  /* Transition added to width and transform */
+  transform: translateX(0);
+  width: calc(100vw);
+}
+
+.login-signup-form {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  background-color: rgb(57, 59, 57);
+  box-shadow: 15px 15px 9px 9px rgb(45, 46, 45);
+  width: 100%;
+  max-width: 400px;
+  padding-bottom: 75px;
+  padding-top: 75px;
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  color: white;
+  text-shadow: 6px 6px 4px rgb(45, 46, 45);
+}
+
+.inputfield {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.inputfield:focus {
+  box-shadow: 3px 1px 9px 9px rgb(45, 46, 45);
+  transform: translateZ(5px) scale(1.05);
+  transition-duration: .5s;
+  border-color: white;
+  outline: none;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: rgb(45, 46, 45);
+  box-shadow: 4px 8px 20px rgba(0, 0, 0, 0.2) !important;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  transform: translateY(-5px) scale(1.02);
+  background: linear-gradient(45deg, rgba(58, 59, 58, 0.2), rgb(45, 46, 45));
+}
+
+.toggle-btn {
+  margin-top: 10px;
+  color: white;
+  cursor: pointer;
+}
+
+.toggle-btn:hover {
+  color: white;
+  transform: translateZ(10px) scale(1.05);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
   .login-signup-form {
-    background-color: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-    padding-bottom: 75px;
-    padding-top: 75px;
-    text-align: center;
+    padding: 20px;
+    max-width: 350px;
   }
-  
+
   h2 {
-    margin-bottom: 20px;
-    font-size: 1.8rem;
-    color: #333;
+    font-size: 1.6rem;
   }
-  
+
   input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+
+  .submit-btn {
     font-size: 1rem;
   }
-  
-  input:focus {
-    border-color: #5c6bc0;
-    outline: none;
+}
+
+@media (max-width: 480px) {
+  .login-signup-form {
+    padding: 15px;
+    max-width: 300px;
   }
-  
+
+  h2 {
+    font-size: 1.4rem;
+  }
+
+  input {
+    font-size: 0.85rem;
+    padding: 6px;
+  }
+
   .submit-btn {
-    width: 100%;
-    padding: 10px;
-    background-color: #5c6bc0;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.2rem;
-    cursor: pointer;
+    font-size: 0.9rem;
   }
-  
-  .submit-btn:hover {
-    background-color: #3949ab;
-  }
-  
-  .toggle-btn {
-    margin-top: 10px;
-    color: #5c6bc0;
-    cursor: pointer;
-  }
-  
-  .toggle-btn:hover {
-    color: #3949ab;
-  }
-  
-  /* Responsive styles */
-  @media (max-width: 768px) {
-    .login-signup-form {
-      padding: 20px;
-      max-width: 350px;
-    }
-  
-    h2 {
-      font-size: 1.6rem;
-    }
-  
-    input {
-      font-size: 0.9rem;
-      padding: 8px;
-    }
-  
-    .submit-btn {
-      font-size: 1rem;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .login-signup-form {
-      padding: 15px;
-      max-width: 300px;
-    }
-  
-    h2 {
-      font-size: 1.4rem;
-    }
-  
-    input {
-      font-size: 0.85rem;
-      padding: 6px;
-    }
-  
-    .submit-btn {
-      font-size: 0.9rem;
-    }
-  }
-  
+}
