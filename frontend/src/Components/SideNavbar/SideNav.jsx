@@ -108,7 +108,6 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
     }
 
     const homePage = () => {
-        resetState()
         navigate('/');
     }
 
