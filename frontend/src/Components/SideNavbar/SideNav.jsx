@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faPenToSquare, faEllipsis, faUser, faThumbtack, faAngleUp, faAngleDown, faMessage, faPhotoFilm, faHouse } from '@fortawesome/free-solid-svg-icons';
@@ -13,6 +13,7 @@ import $ from 'jquery';
 export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions, setSessions, untitledSession, setUntitledSession }) {
 
     const navigate = useNavigate();
+    const location = useLocation();
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
 
@@ -123,7 +124,9 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
     };
 
     const toggleKnowledge = () => {
-        setKnowledgeFolderOpen((prev) => !prev); // Toggle the folder open/close state
+        if (!location.pathname.startsWith("/textgenerator/")) {
+            setKnowledgeFolderOpen((prev) => !prev);
+        }
     };
 
     const toggleCreative = () => {
