@@ -2,16 +2,21 @@ const mongoose = require('mongoose');
 
 // Chat Schema
 const chatSchema = new mongoose.Schema({
-  chat: [
+  history: [
     {
-      sender: {
+      role: {
         type: String,
         required: true,
+        enum: ['user', 'model']
       },
-      text: {
-        type: String,
-        required: true,
-      },
+      parts: [
+        {
+          text: {
+            type: String,
+            required: true
+          },
+        }
+      ],
     }
   ],
   email: {

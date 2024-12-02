@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as service from './TextGeneratorService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane, faFileArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import "./TextGenerator.css";
 import { useParams } from 'react-router-dom';
 
@@ -16,16 +16,9 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
     const [isTyping, setIsTyping] = useState(false);
     useEffect(() => {
         const fetchMessages = async () => {
+            localStorage.setItem('path', '/textgenerator/');
             const data = await service.getChat(sessionId, userId);
-            if (data && data.chat && data.chat.length > 0) {
-                const updatedChat = data.chat.map(item => ({
-                    ...item,
-                    text: item.text.replace(/\*/g, ' ') // Replace all '*' with space
-                }));
-                setMessages(updatedChat || [])
-                return
-            }
-            setMessages(data.chat || [])
+            setMessages(data.history || [])
         };
         fetchMessages();
     }, [sessionId, userId]);
@@ -67,62 +60,36 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
         if (input.trim()) {
             const newMessages = [
                 ...messages,
-                { text: input, sender: 'user' },
+                { parts: [{ text: input }], role: 'user' },
             ];
 
+            const history = [...messages];
+
             setMessages(newMessages);
-            const sessionName = newMessages[0].text.substring(0, 20);
+            const sessionName = newMessages[0].parts[0].text.substring(0, 20);
             saveChatToDatabase(newMessages, sessionId, sessionName, userId);
             setInput('');
 
             try {
-                const response = await service.getTextGeneration(input);
+                const response = await service.getTextGeneration(history, input);
+                const result = response.replace(/\*/g, ' ');
                 const updatedMessages = [
                     ...newMessages,
-                    { text: response, sender: 'bot' }
+                    { parts: [{ text: result }], role: 'model' }
                 ];
-                const updatedChat = updatedMessages.map(item => ({
-                    ...item,
-                    text: item.text.replace(/\*/g, ' ') // Replace all '*' with space
-                }));
-                setMessages(updatedChat);
-                saveChatToDatabase(updatedChat, sessionId, sessionName, userId);
+                setMessages(updatedMessages);
+                saveChatToDatabase(updatedMessages, sessionId, sessionName, userId);
             } catch (error) {
                 console.error('Error generating text:', error);
                 setMessages((prevMessages) => [
                     ...prevMessages,
-                    { text: 'Failed to generate text.', sender: 'bot' }
+                    { parts: [{ text: 'Failed to generate text.' }], role: 'model' }
                 ]);
             } finally {
                 setIsTyping(false);
             }
         }
     }
-
-    // Function to handle the file upload click
-    const handleFileUploadClick = () => {
-        document.getElementById('file-upload').click();
-    };
-
-    // Function to handle file change
-    const handleFileChange = async (e) => {
-        setIsTyping(true);
-        const file = e.target.files[0];
-
-        if (file) {
-            try {
-                const upload = await service.uploadImageToChat(sessionId, userId, file)
-                setMessages(upload.data)
-                const response = await service.getImageContent(sessionId, userId, file);
-                setMessages(response.data)
-            } catch (error) {
-                console.error('Error generating text:', error);
-                // setResult('Failed to generate text.');
-            } finally {
-                setIsTyping(false);
-            }
-        }
-    };
 
     return (
         <div className="text-container">
@@ -132,39 +99,30 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
                         <p className="text-white">No messages yet.</p>
                     ) : (
                         messages.map((message, index) => (
-                            <div key={index} className={`message ${message.sender}`}>
-                                {message.sender === 'bot' && (
+                            <div key={index} className={`message ${message.role}`}>
+                                {message.role === 'model' && (
                                     <><button
                                         className="copy-button"
-                                        onClick={() => copyToClipboard(message.text, index)}>
+                                        onClick={() => copyToClipboard(message.parts[0].text, index)}>
                                         {copiedIndex === index ? "Copied!" : "Copy"}
                                     </button>
                                         <br />
                                     </>
                                 )}
-                                {message.sender === 'user' && message.text.startsWith('{"contentType":') ? (
-                                    (() => {
-                                        const parsedMessage = JSON.parse(message.text);
-                                        const data = `data:${parsedMessage.contentType};base64,${parsedMessage.data}`;
-                                        return <img src={data} style={{ maxWidth: "100%", height: "auto", borderRadius: "15px 15px 0 15px" }} alt="Uploaded content" />;
-                                    })()
-                                ) : (
-                                    <div style={{ whiteSpace: "pre-wrap" }}>{message.text}</div>
-                                )}
+                                {
+                                    <div style={{ whiteSpace: "pre-wrap" }}>{message.parts[0].text}</div>
+                                }
 
                             </div>
                         ))
                     )}
-                    {isTyping && <div className="typing-indicator">Bot is typing...</div>}
+                    {isTyping && <div className="typing-indicator">Klaus is typing...</div>}
                     {/* This div helps to scroll to the bottom */}
                     <div ref={chatEndRef} />
                 </div>
 
                 <form className="input-box" onSubmit={handleSubmit}>
                     <div className="input-with-icon">
-                        <button type="button" disabled={messages.length === 0} className="btn upload-btn" onClick={handleFileUploadClick}>
-                            <FontAwesomeIcon icon={faFileArrowUp} />
-                        </button>
                         <input
                             type="text"
                             className="form-control input-query"
@@ -173,14 +131,6 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
                             id="prompt"
                             name="inputvalue"
                             onChange={(e) => setInput(e.target.value)}
-                        />
-                        {/* Hidden file input */}
-                        <input
-                            type="file"
-                            id="file-upload"
-                            accept="image/*"
-                            style={{ display: 'none' }}
-                            onChange={handleFileChange}
                         />
                     </div>
                     <button type="submit" className="btn submit btn-secondary">

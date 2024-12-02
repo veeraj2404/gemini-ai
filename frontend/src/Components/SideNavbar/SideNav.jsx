@@ -10,56 +10,82 @@ import { getUser } from '../Profile/ProfileService.js'
 import Profile from '../Profile/Profile.jsx';
 import $ from 'jquery';
 
-export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions, setSessions, untitledSession, setUntitledSession }) {
+export default function SideNav({ isOpen, toggleSideNav, onNewSession, imageSessions, setImageSessions, sessions, setSessions, untitledSession, setUntitledSession, imageUntitledSession, setImageUntitledSession }) {
 
     const navigate = useNavigate();
     const location = useLocation();
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
+    const path = localStorage.getItem('path');
 
-    const [isKnowledgeFolderOpen, setKnowledgeFolderOpen] = useState(true); // State to control knowledge folder collapse
-    const [isCreativeFolderOpen, setCreativeFolderOpen] = useState(false); // State to control creative folder collapse
+    const [isKnowledgeFolderOpen, setKnowledgeFolderOpen] = useState(path === "/textgenerator/" || location.pathname.startsWith("/textgenerator/") ? true : false); // State to control knowledge folder collapse
+    const [isCreativeFolderOpen, setCreativeFolderOpen] = useState(path === "/imagegenerator/" || location.pathname.startsWith("/imagegenerator/") ? true : false); // State to control creative folder collapse
     const [preview, setPreview] = useState('');
     const [filteredSessions, setFilteredSessions] = useState([]);
     const [isDropdownOpen, setDropdownOpen] = useState(false); // State to manage dropdown visibility
     const [isSessionDropdownOpen, setSessionDropdownOpen] = useState(null); // State to manage dropdown visibility
+    const [isImageSessionDropdownOpen, setImageSessionDropdownOpen] = useState(null); // State to manage dropdown visibility
     const dropdownRef = useRef(null);
     const [isModalOpen, setModalOpen] = useState(false); // Controls modal visibility
     const [isProfileOpen, setProfileOpen] = useState(false); // Controls settings visibility
     const [editingSessionId, setEditingSessionId] = useState(null);
     const [newSessionName, setNewSessionName] = useState("");
+    const [editingImageSessionId, setEditingImageSessionId] = useState(null);
+    const [newImageSessionName, setNewImageSessionName] = useState("");
     const [present, setPresent] = useState(true)
+    const [imagePresent, setImagePresent] = useState(true)
     const [selectedSession, setSelectedSession] = useState(null); // Holds session to be deleted
 
     useEffect(() => {
         const fetchSession = async () => {
             if (token) {
                 try {
-                    const data = await service.getSession(userId); // Fetch the session data from backend
+                    const user = await getUser(userId);
+                    if (user.preview) {
+                        setPreview(user.preview)
+                    }
 
-                    if (data.length === 0) {
-                        setPresent(false)
-                        setUntitledSession(false)
+                    const data = await service.getSession(userId); // Fetch the session data from backend
+                    if (!Array.isArray(data) || data.length === 0) {
+                        setPresent(false);
+                        setUntitledSession(false);
+                        return;
                     }
                     const indexedData = data.map((session, index) => ({
                         ...session,
                         originalIndex: index, // Add original index to each session
                         present: true
                     }));
-                    setSessions(indexedData || []);
-
-                    const user = await getUser(userId);
-                    if (user.preview) {
-                        setPreview(user.preview)
+                    setSessions(indexedData);
+                } catch (error) {
+                    console.error('Error fetching session data:', error);
+                }
+            }
+        };
+        const fetchImageSession = async () => {
+            if (token) {
+                try {
+                    const data = await service.getImageSession(userId); // Fetch the session data from backend
+                    if (!Array.isArray(data) || data.length === 0) {
+                        // console.warn("Session data is empty or invalid.");
+                        setImagePresent(false);
+                        setImageUntitledSession(false);
+                        return;
                     }
-
+                    const indexedData = data.map((session, index) => ({
+                        ...session,
+                        originalIndex: index, // Add original index to each session
+                        present: true
+                    }));
+                    setImageSessions(indexedData);
                 } catch (error) {
                     console.error('Error fetching session data:', error);
                 }
             }
         };
         fetchSession();
-    }, [setSessions, token, userId, isModalOpen, setUntitledSession]);
+        fetchImageSession();
+    }, [setSessions, setImageSessions, token, userId, isModalOpen, setUntitledSession, setImageUntitledSession]);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -67,18 +93,19 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setDropdownOpen(false); // Close the dropdown
                 setSessionDropdownOpen(null)
+                setImageSessionDropdownOpen(null)
                 setFilteredSessions([])
             }
         };
 
-        if (isDropdownOpen || isSessionDropdownOpen || filteredSessions) {
+        if (isDropdownOpen || isSessionDropdownOpen || isImageSessionDropdownOpen || filteredSessions) {
             document.addEventListener('mousedown', handleClickOutside); // Listen for outside clicks
         }
 
         return () => {
             document.removeEventListener('mousedown', handleClickOutside); // Cleanup event listener
         };
-    }, [isDropdownOpen, isSessionDropdownOpen, filteredSessions]);
+    }, [isDropdownOpen, isSessionDropdownOpen, isImageSessionDropdownOpen, filteredSessions]);
 
     const toggleDropdown = () => {
         setDropdownOpen(prev => !prev);
@@ -89,11 +116,15 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
         setFilteredSessions([])
         setDropdownOpen(false)
         setSessionDropdownOpen(null)
+        setImageSessionDropdownOpen(null)
         setModalOpen(false)
         setProfileOpen(false)
         setEditingSessionId(null)
+        setEditingImageSessionId(null)
         setNewSessionName("")
+        setNewImageSessionName("")
         setPresent(true)
+        setImagePresent(true)
         setSelectedSession(null)
     }
 
@@ -109,15 +140,34 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
     }
 
     const homePage = () => {
-        navigate('/');
+        navigate('/home');
+    }
+
+    const handleProfile = () => {
+        setDropdownOpen(false)
+        setProfileOpen(true)
     }
 
     const createNewSession = () => {
-        if (untitledSession) {
-            let newSessionId = present ? Math.max(...sessions.map(session => session.sessionId)) + 1 : 1;
-            navigate(`/textgenerator/${newSessionId}`);
-            onNewSession(newSessionId, present); // Notify the parent to update the current session
-            setUntitledSession(false)
+        if (location.pathname.startsWith("/textgenerator/")) {
+
+            if (untitledSession) {
+                const newSessionId = present ? Math.max(...sessions.map(session => session.sessionId)) + 1 : 1;
+                navigate(`/textgenerator/${newSessionId}`);
+                onNewSession(newSessionId, present); // Notify the parent to update the current session
+                setUntitledSession(false)
+                return
+            }
+        } else if (location.pathname.startsWith("/imagegenerator/")) {
+
+            if (imageUntitledSession) {
+                const newSessionId = imagePresent ? Math.max(...imageSessions.map(session => session.imageSessionId)) + 1 : 1;
+                navigate(`/imagegenerator/${newSessionId}`);
+                onNewSession(newSessionId, imagePresent); // Notify the parent to update the current session
+                setImageUntitledSession(false)
+                return
+            }
+        } else if (location.pathname.startsWith("/home")) {
             return
         }
         toast.warning("New Session is already Present")
@@ -130,25 +180,41 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
     };
 
     const toggleCreative = () => {
-        setCreativeFolderOpen((prev) => !prev); // Toggle the folder open/close state
+        if (!location.pathname.startsWith("/imagegenerator/")) {
+            setCreativeFolderOpen((prev) => !prev); // Toggle the folder open/close state
+        }
     };
 
-    const startEditing = (sessionId, currentName) => {
+    const startEditing = (id, name) => {
         setSessionDropdownOpen(null)
-        setEditingSessionId(sessionId);
-        setNewSessionName(currentName || `Chat Session ${sessionId}`);
+        setEditingSessionId(id);
+        setNewSessionName(name || `Chat Session ${id}`);
     };
 
-    const handleRenameSession = async (sessionId) => {
+    const startImageEditing = (id, name) => {
+        setImageSessionDropdownOpen(null)
+        setEditingImageSessionId(id);
+        setNewImageSessionName(name || `Image Session ${id}`);
+    };
+
+    const sessionEdit = (id) => {
+        setSessionDropdownOpen(prev => (prev === id ? null : id))
+    }
+
+    const imageSessionEdit = (id) => {
+        setImageSessionDropdownOpen(prev => (prev === id ? null : id))
+    }
+
+    const handleRenameSession = async (id) => {
         try {
             const updatedSessions = sessions.map((session) =>
-                session.sessionId === sessionId ? { ...session, sessionName: newSessionName } : session
+                session.sessionId === id ? { ...session, sessionName: newSessionName } : session
             );
             setSessions(updatedSessions);
             setEditingSessionId(null);
 
             // Update session name in the backend
-            const message = await service.updateSessionName(sessionId, newSessionName, userId);
+            const message = await service.updateSessionName(id, newSessionName, userId);
             toast.success(message, {
                 style: {
                     backgroundColor: 'rgb(45, 46, 45)',
@@ -161,34 +227,26 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
         }
     };
 
-    const sessionEdit = (sessionId) => {
-        setSessionDropdownOpen(prev => (prev === sessionId ? null : sessionId))
-    }
+    const handleRenameImageSession = async (id) => {
+        try {
+            const updatedSessions = imageSessions.map((session) =>
+                session.imageSessionId === id ? { ...session, imageSessionName: newImageSessionName } : session
+            );
+            setImageSessions(updatedSessions);
+            setEditingImageSessionId(null);
 
-    const handleProfile = () => {
-        setDropdownOpen(false)
-        setProfileOpen(true)
-    }
-
-    const handleDeleteClick = (sessionId) => {
-        setSelectedSession(sessionId);
-        setModalOpen(true); // Open the modal
-    };
-
-
-    const confirmDeleteSession = async (selectedSession) => {
-        const message = await service.deleteSession(selectedSession, userId)
-        if (selectedSession === 1 && sessions.length === 1) {
-            createNewSession()
+            // Update session name in the backend
+            const message = await service.updateImageSessionName(id, newImageSessionName, userId);
+            toast.success(message, {
+                style: {
+                    backgroundColor: 'rgb(45, 46, 45)',
+                    color: 'white',
+                    fontFamily: 'cursive'
+                }
+            })
+        } catch (error) {
+            console.error("Failed to update session name:", error);
         }
-        setModalOpen(false); // Close the modal
-        toast.error(message, {
-            style: {
-                backgroundColor: 'rgb(45, 46, 45)',
-                color: 'white',
-                fontFamily: 'cursive'
-            }
-        })
     };
 
     const updatePriority = async (id, currentPriority) => {
@@ -226,18 +284,89 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
         }
     };
 
+    const updateImagePriority = async (id, currentPriority) => {
+        try {
+            // Toggle priority on the server
+            const message = await service.updateImagePriority(id, !currentPriority, userId);
+
+            // Update local state to reflect the new priority
+            const updatedSessions = imageSessions.map((session) =>
+                session.imageSessionId === id
+                    ? { ...session, priority: !currentPriority }
+                    : session
+            );
+
+            // Sort sessions: pinned sessions first, followed by the rest in their original order
+            const sortedSessions = updatedSessions
+                .filter((session) => session.priority) // Pinned sessions
+                .concat(
+                    updatedSessions
+                        .filter((session) => !session.priority) // Unpinned sessions
+                        .sort((a, b) => a.originalIndex - b.originalIndex) // Sort by original index
+                );
+
+            setImageSessions(sortedSessions); // Update the state with the sorted sessions
+            setImageSessionDropdownOpen(null); // Close dropdown menu
+            toast.info(message, {
+                style: {
+                    backgroundColor: 'rgb(45, 46, 45)',
+                    color: 'white',
+                    fontFamily: 'cursive'
+                }
+            })
+        } catch (error) {
+            console.error("Failed to update priority:", error);
+        }
+    };
+
+    const handleDeleteClick = (id) => {
+        setSelectedSession(id);
+        setModalOpen(true); // Open the modal
+    };
+
+    const confirmDeleteSession = async (selectedSession) => {
+        var message
+        if (location.pathname.startsWith("/textgenerator/")) {
+            message = await service.deleteSession(selectedSession, userId)
+        }
+        if (location.pathname.startsWith("/imagegenerator/")) {
+            message = await service.deleteImageSession(selectedSession, userId)
+        }
+        setModalOpen(false); // Close the modal
+        toast.error(message.message, {
+            style: {
+                backgroundColor: 'rgb(45, 46, 45)',
+                color: 'white',
+                fontFamily: 'cursive'
+            }
+        })
+        window.location.reload();
+    };
+
     const searchBar = (e) => {
         const name = e.target.value;
-        setFilteredSessions(sessions.filter(session =>
-            session.sessionName.toLowerCase().includes(name.toLowerCase())
-        ));
+        if (location.pathname.startsWith("/textgenerator/")) {
+            setFilteredSessions(sessions.filter(session =>
+                session.sessionName.toLowerCase().includes(name.toLowerCase())
+            ));
+        }
+        if (location.pathname.startsWith("/imagegenerator/")) {
+            setFilteredSessions(imageSessions.filter(session =>
+                session.imageSessionName.toLowerCase().includes(name.toLowerCase())
+            ));
+        }
         if (name === '') {
             setFilteredSessions([])
         }
     }
 
     const navigateFromSearchBar = (id) => {
-        navigate(`/textgenerator/${id}`);
+        if (location.pathname.startsWith("/textgenerator/")) {
+            navigate(`/textgenerator/${id}`);
+        }
+        if (location.pathname.startsWith("/imagegenerator/")) {
+            navigate(`/imagegenerator/${id}`);
+        }
         setFilteredSessions([])
         $('#searchBar').val('');
     }
@@ -245,7 +374,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
     const downloadChatPdf = async (id, name) => {
         try {
             const chat = await getChat(id, userId)
-            const response = await service.downloadChatPdf(name, chat.chat);
+            const response = await service.downloadChatPdf(name, chat.history);
             const blob = new Blob([response], { type: 'application/pdf' });
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
@@ -319,8 +448,8 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                                 <div className="search-bar-menu show" ref={dropdownRef}>
                                     <ul>
                                         {filteredSessions.map(session => (
-                                            <li onClick={() => navigateFromSearchBar(session.sessionId)} key={session.sessionId}>
-                                                {session.sessionName}
+                                            <li onClick={() => navigateFromSearchBar(session.sessionId ? session.sessionId : session.imageSessionId)} key={session.sessionId ? session.sessionId : session.imageSessionId}>
+                                                {session.sessionName ? session.sessionName : session.imageSessionName}
                                             </li>
                                         ))}
                                     </ul>
@@ -329,13 +458,13 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                             <span><h6 className='chatSession'>Klaus-AI</h6></span>
                             <div className="search-bar mb-1">
                                 <button onClick={homePage} className="homepage">
-                                    <FontAwesomeIcon icon={faHouse} style={{ marginRight: "3px" }}/>
-                                    Home 
+                                    <FontAwesomeIcon icon={faHouse} style={{ marginRight: "3px" }} />
+                                    Home
                                 </button>
                             </div>
 
                             {/* Collapsible folder starts here */}
-                            <div className="folder-container mb-2">
+                            <div className="folder-container mb-1">
                                 <button
                                     className={`btn btn-secondary folder-btn ${isKnowledgeFolderOpen ? 'open' : ''}`}
                                     type="button"
@@ -490,27 +619,27 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                                 {/* Conditionally render the folder's contents */}
                                 {isCreativeFolderOpen && (
                                     <div className="session-content">
-                                        {sessions.slice().map((session) => (
+                                        {imageSessions.slice().map((session) => (
                                             <NavLink
-                                                to={`/textgenerator/${session.sessionId}`}
+                                                to={`/imagegenerator/${session.imageSessionId}`}
                                                 className={({ isActive }) =>
                                                     isActive ? "session-item active" : "session-item"
                                                 } // Apply active class to session-item div
-                                                key={session.sessionId}
+                                                key={session.imageSessionId}
                                             >
-                                                {editingSessionId === session.sessionId ? (
+                                                {editingImageSessionId === session.imageSessionId ? (
                                                     <input
                                                         type="text"
-                                                        value={newSessionName}
+                                                        value={newImageSessionName}
                                                         onChange={(e) =>
-                                                            setNewSessionName(e.target.value)
+                                                            setNewImageSessionName(e.target.value)
                                                         }
                                                         onBlur={() =>
-                                                            handleRenameSession(session.sessionId)
+                                                            handleRenameImageSession(session.imageSessionId)
                                                         }
                                                         onKeyDown={(e) =>
                                                             e.key === "Enter" &&
-                                                            handleRenameSession(session.sessionId)
+                                                            handleRenameImageSession(session.imageSessionId)
                                                         }
                                                         className="session-rename-input"
                                                         autoFocus
@@ -518,9 +647,9 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                                                 ) : (
                                                     <div
                                                         onDoubleClick={() =>
-                                                            startEditing(
-                                                                session.sessionId,
-                                                                session.sessionName
+                                                            startImageEditing(
+                                                                session.imageSessionId,
+                                                                session.imageSessionName
                                                             )
                                                         }
                                                     >
@@ -532,24 +661,24 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                                                                     />
                                                                 )}
                                                             </span>
-                                                            <span>{session.sessionName}</span>
+                                                            <span>{session.imageSessionName}</span>
                                                         </>
                                                     </div>
                                                 )}
-                                                {present && session.present && (
+                                                {imagePresent && session.present && (
                                                     <>
                                                         <span className="ellipsis-icon">
                                                             <button
                                                                 className="edit"
                                                                 onClick={() =>
-                                                                    sessionEdit(session.sessionId)
+                                                                    imageSessionEdit(session.imageSessionId)
                                                                 }
                                                             >
                                                                 <FontAwesomeIcon icon={faEllipsis} />
                                                             </button>
                                                         </span>
-                                                        {isSessionDropdownOpen ===
-                                                            session.sessionId && (
+                                                        {isImageSessionDropdownOpen ===
+                                                            session.imageSessionId && (
                                                                 <div
                                                                     className="session-dropdown"
                                                                     ref={dropdownRef}
@@ -557,8 +686,8 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                                                                     <ul>
                                                                         <li
                                                                             onClick={() =>
-                                                                                updatePriority(
-                                                                                    session.sessionId,
+                                                                                updateImagePriority(
+                                                                                    session.imageSessionId,
                                                                                     session.priority
                                                                                 )
                                                                             }
@@ -569,9 +698,9 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                                                                         </li>
                                                                         <li
                                                                             onClick={() =>
-                                                                                startEditing(
-                                                                                    session.sessionId,
-                                                                                    session.sessionName
+                                                                                startImageEditing(
+                                                                                    session.imageSessionId,
+                                                                                    session.imageSessionName
                                                                                 )
                                                                             }
                                                                         >
@@ -580,21 +709,11 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
                                                                         <li
                                                                             onClick={() =>
                                                                                 handleDeleteClick(
-                                                                                    session.sessionId
+                                                                                    session.imageSessionId
                                                                                 )
                                                                             }
                                                                         >
                                                                             Delete
-                                                                        </li>
-                                                                        <li
-                                                                            onClick={() =>
-                                                                                downloadChatPdf(
-                                                                                    session.sessionId,
-                                                                                    session.sessionName
-                                                                                )
-                                                                            }
-                                                                        >
-                                                                            Export
                                                                         </li>
                                                                     </ul>
                                                                 </div>
@@ -614,8 +733,8 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, sessions,
 
                             <div className="search-bar">
                                 <button onClick={homePage} className="homepage">
-                                    <FontAwesomeIcon icon={faHouse} style={{ marginRight: "3px" }}/>
-                                    Home 
+                                    <FontAwesomeIcon icon={faHouse} style={{ marginRight: "3px" }} />
+                                    Home
                                 </button>
                             </div>
                         </nav>

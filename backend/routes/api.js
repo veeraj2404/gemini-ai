@@ -9,6 +9,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 //import models
 const Chats = require('../models/Chats')
+const ImageChats = require('../models/ImageChats')
 const User = require('../models/User');
 const Image = require('../models/Image');
 
@@ -24,7 +25,7 @@ const uploaded = multer({ storage: multer.memoryStorage() })
 router.post('/imagecontent', upload.single('file'), async (req, res) => {
     console.log("Calling Api for Image Content Generating... ",)
     const file = req.file;  // Access the uploaded file details
-    const { sessionId, userId } = req.body;
+    const { imageSessionId, userId, text } = req.body;
     const user = await User.findById(userId);
 
     if (!user) {
@@ -49,7 +50,7 @@ router.post('/imagecontent', upload.single('file'), async (req, res) => {
         // Generate content based on the uploaded image
         const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
         const result = await model.generateContent([
-            "Tell me about this image.",
+            text === '' ?  "Tell me about this image." : text,
             {
                 fileData: {
                     fileUri: uploadResult.file.uri,
@@ -57,16 +58,16 @@ router.post('/imagecontent', upload.single('file'), async (req, res) => {
                 },
             },
         ]);
-        let chatSession = await Chats.findOne({ email, sessionId });
-        const newMessages = [
-            ...chatSession.chat,
-            { text: result.response.text(), sender: 'bot' },
+        let ImageChatsSession = await ImageChats.findOne({ email, imageSessionId });
+        const history = [
+            ...ImageChatsSession.history,
+            { parts: [{ text: result.response.text() }], role: 'model' }
         ];
-        chatSession.chat = newMessages;
-        await chatSession.save();
+        ImageChatsSession.history = history;
+        await ImageChatsSession.save();
         res.json({
             message: result.response.text(),
-            data: newMessages
+            data: history
         });
     } catch (error) {
         console.error('Error processing request:', error);
@@ -78,7 +79,7 @@ router.post('/imagecontent', upload.single('file'), async (req, res) => {
 router.post('/upload', uploaded.single('file'), async (req, res) => {
     console.log("Calling Api to save image data...");
 
-    const { sessionId, userId } = req.body;
+    const { imageSessionId, userId, text } = req.body;
     const user = await User.findById(userId);
 
     if (!user) {
@@ -87,21 +88,29 @@ router.post('/upload', uploaded.single('file'), async (req, res) => {
     const email = user.email;
 
     try {
-        let chatSession = await Chats.findOne({ email, sessionId });
-
         const image = new Image({
             contentType: req.file.mimetype,
             name: req.file.originalname,
             data: req.file.buffer.toString('base64'),
         });
-        const chat = JSON.stringify(image);
-        const newMessages = [
-            ...chatSession.chat,
-            { text: chat, sender: 'user' },
-        ];
-        chatSession.chat = newMessages;
-        await chatSession.save();
-        res.json({ message: 'Image uploaded successfully!', data: newMessages });
+        let ImageChatsSession = await ImageChats.findOne({ email, imageSessionId });
+
+        if (!ImageChatsSession) {
+            // If no chat session exists, create a new one
+            var history = [
+                { parts: [{ image, text }], role: 'user' }
+            ];
+            ImageChatsSession = new ImageChats({ history, email, imageSessionId, imageSessionName: req.file.originalname, priority: false });
+        } else {
+            // If chat session exists, add the new message to the chat array
+            var history = [
+                ...ImageChatsSession.history,
+                { parts: [{ image, text }], role: 'user' }
+            ];
+        }
+        ImageChatsSession.history = history;
+        await ImageChatsSession.save();
+        res.json({ message: 'Image uploaded successfully!', data: history });
     } catch (error) {
         console.error('Error uploading image:', error);
         res.status(500).json({ error: 'Failed to upload image' });
@@ -111,11 +120,14 @@ router.post('/upload', uploaded.single('file'), async (req, res) => {
 router.get('/textgenerate', async (req, res) => {
     console.log("Calling Api for Text Generating...");
 
+    const {history, text} = req.query;
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const chat = model.startChat({ history });
 
     try {
-        const response = await model.generateContent(req.query.text);
-        res.json(response.response.text() || { message: "No content Generated" })
+        let result = await chat.sendMessage(text);
+        
+        res.json(result.response.text() || { message: "No content Generated" })
     } catch (error) {
         res.json({ message: error });
     }
@@ -123,7 +135,7 @@ router.get('/textgenerate', async (req, res) => {
 
 router.post('/saveChat', async (req, res) => {
     console.log("Calling Api to save chat data...");
-    const { chat, sessionId, sessionName, userId } = req.body;
+    const { history, sessionId, sessionName, userId } = req.body;
     const user = await User.findById(userId);
 
     if (!user) {
@@ -137,10 +149,10 @@ router.post('/saveChat', async (req, res) => {
 
         if (!chatSession) {
             // If no chat session exists, create a new one
-            chatSession = new Chats({ chat, email, sessionId, sessionName: sessionName, priority: false });
+            chatSession = new Chats({ history, email, sessionId, sessionName: sessionName, priority: false });
         } else {
             // If chat session exists, add the new message to the chat array
-            chatSession.chat = chat;
+            chatSession.history = history;
         }
 
         // Save the updated or new chat session to the database
@@ -179,6 +191,32 @@ router.post('/renamesession', async (req, res) => {
     }
 })
 
+router.post('/renameimagesession', async (req, res) => {
+    console.log("Calling Api to rename chat session...");
+    const { imageSessionId, imageSessionName, userId } = req.body;
+    const user = await User.findById(userId);
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    const email = user.email; // Extract email from the request parameters
+
+    try {
+        let imageChatSession = await ImageChats.findOne({ email, imageSessionId });
+
+        imageChatSession.imageSessionName = imageSessionName;
+
+        // Save the updated or new chat session to the database
+        await imageChatSession.save();
+
+        res.status(200).json({ message: 'Remaned successfully' });
+    } catch (error) {
+        console.error('Error saving chat session name:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+})
+
 router.post('/updatepriority', async (req, res) => {
     console.log("Calling Api to update chat priority...");
     const { sessionId, priority, userId } = req.body;
@@ -197,6 +235,32 @@ router.post('/updatepriority', async (req, res) => {
 
         // Save the updated or new chat session to the database
         await chatSession.save();
+        const message = priority ? 'Set as Priority' : 'Remove from Priority'
+        res.status(200).json({ message: message });
+    } catch (error) {
+        console.error('Error saving chat Priority state:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+})
+
+router.post('/updateimagepriority', async (req, res) => {
+    console.log("Calling Api to update chat priority...");
+    const { imageSessionId, priority, userId } = req.body;
+    const user = await User.findById(userId);
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    const email = user.email; // Extract email from the request parameters
+
+    try {
+        let imageChatSession = await ImageChats.findOne({ email, imageSessionId });
+
+        imageChatSession.priority = priority;
+
+        // Save the updated or new chat session to the database
+        await imageChatSession.save();
         const message = priority ? 'Set as Priority' : 'Remove from Priority'
         res.status(200).json({ message: message });
     } catch (error) {
@@ -229,6 +293,30 @@ router.post('/deletesession', async (req, res) => {
     }
 })
 
+router.post('/deleteimagesession', async (req, res) => {
+    console.log("Calling Api to delete chat session...");
+    const { imageSessionId, userId } = req.body;
+    const user = await User.findById(userId);
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    const email = user.email; // Extract email from the request parameters
+
+    try {
+        let imageChatSession = await ImageChats.findOne({ email, imageSessionId });
+
+        // Save the updated or new chat session to the database
+        await imageChatSession.deleteOne(imageChatSession);;
+
+        res.status(200).json({ message: 'Deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting chat session:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+})
+
 router.get('/getChat', async (req, res) => {
     console.log("Calling Api for getting chat...");
     const { sessionId, userId } = req.query;
@@ -243,14 +331,42 @@ router.get('/getChat', async (req, res) => {
 
     try {
         // Find the chat session by the email
-        const chatSession = await Chats.findOne({ sessionId, email });
+        const chatSession = await Chats.findOne({ sessionId, email }, { 'history._id': 0, 'history.parts._id': 0 });
 
         if (!chatSession) {
             return res.status(200).json({ message: 'No chat session found for this email.' });
         }
 
         // Respond with the chat data
-        res.status(200).json({ chat: chatSession.chat });
+        res.status(200).json({ history: chatSession.history });
+    } catch (error) {
+        console.error('Error fetching chat data:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+});
+
+router.get('/getImageChat', async (req, res) => {
+    console.log("Calling Api for getting image chat...");
+    const { imageSessionId, userId } = req.query;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    const email = user.email; // Extract email from the request parameters
+
+    try {
+        // Find the chat session by the email
+        const ImageChatsSession = await ImageChats.findOne({ imageSessionId, email });
+
+        if (!ImageChatsSession) {
+            return res.status(200).json({ message: 'No chat session found for this email.' });
+        }
+
+        // Respond with the chat data
+        res.status(200).json({ history: ImageChatsSession.history });
     } catch (error) {
         console.error('Error fetching chat data:', error);
         res.status(500).json({ message: 'Internal server error', error: error.message });
@@ -294,10 +410,47 @@ router.get('/getSession', async (req, res) => {
     }
 });
 
+router.get('/getImageSession', async (req, res) => {
+    console.log("Calling Api to get image session...");
+    const { userId } = req.query;
+    const user = await User.findById(userId);
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    const email = user.email; // Extract email from the request parameters
+
+    try {
+        // Find the chat session by the email
+        const ImageChatSessions = await ImageChats.find({ email });
+
+        if (ImageChatSessions.length === 0) {
+            return res.status(200).json({ message: 'No chat session found for this email.' });
+        }
+
+        // Extract sessionId and sessionName from each session
+        const sessionData = ImageChatSessions
+            .sort((a, b) => b.imageSessionId - a.imageSessionId)
+            .sort((a, b) => b.priority - a.priority)
+            .map(session => ({
+                priority: session.priority,
+                imageSessionId: session.imageSessionId,
+                imageSessionName: session.imageSessionName // Provide default name if missing
+            }));
+
+        // Respond with the chat data
+        res.status(200).json({ sessions: sessionData });
+    } catch (error) {
+        console.error('Error fetching chat sessions:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+});
+
 router.get('/generate-pdf', async (req, res) => {
     console.log("Calling Api to download session chat...");
     try {
-        const { sessionName, chat } = req.query;
+        const { sessionName, history } = req.query;
 
         // Create a new PDF document
         const pdfDoc = await PDFDocument.create();
@@ -312,7 +465,7 @@ router.get('/generate-pdf', async (req, res) => {
 
         // Add the title
         const title = sessionName;
-        page.drawText(title, {
+        page.drawText(`Session Name: ${title}`, {
             x: 50,
             y: height - 50,
             size: 16,
@@ -362,8 +515,8 @@ router.get('/generate-pdf', async (req, res) => {
         };
 
         // Function to add chat message with sender name and dynamic text styling
-        const addMessage = (sender, text, isBot = false) => {
-            const senderText = `${sender}: `;
+        const addMessage = (role, text, isBot = false) => {
+            const senderText = `${role}: `;
             const lines = wrapTextWithLineBreaks(senderText + text, width - margin * 2);
 
             lines.forEach((line) => {
@@ -387,9 +540,9 @@ router.get('/generate-pdf', async (req, res) => {
         };
 
         // Loop through the chat and add messages
-        chat.forEach(({ sender, text }) => {
-            const isBot = sender.toLowerCase() === 'bot'; // Check if it's a bot message
-            addMessage(sender, text, isBot);
+        history.forEach(({ role, parts }) => {
+            const isModel = role.toLowerCase() === 'model'; // Check if it's a bot message
+            addMessage(role, parts[0].text, isModel);
         });
 
         // Save and send the PDF
