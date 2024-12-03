@@ -94,6 +94,7 @@ function App() {
     <div className="app-container ">
       <SideNav isCreativeFolderOpen={isCreativeFolderOpen} setCreativeFolderOpen={setCreativeFolderOpen} isKnowledgeFolderOpen={isKnowledgeFolderOpen} setKnowledgeFolderOpen={setKnowledgeFolderOpen} isOpen={isSideNavOpen} toggleSideNav={toggleSideNav} onNewSession={handleNewSession} imageSessions={imageSessions} setImageSessions={setImageSessions} sessions={sessions} setSessions={setSessions} untitledSession={untitledSession} setUntitledSession={setUntitledSession} imageUntitledSession={imageUntitledSession} setImageUntitledSession={setImageUntitledSession} />
       <Routes>
+        <Route path="" element={<Home sessions={sessions} imageSessions={imageSessions}  setCreativeFolderOpen={setCreativeFolderOpen} setKnowledgeFolderOpen={setKnowledgeFolderOpen}/>} />
         <Route path="/home" element={<Home sessions={sessions} imageSessions={imageSessions}  setCreativeFolderOpen={setCreativeFolderOpen} setKnowledgeFolderOpen={setKnowledgeFolderOpen}/>} />
         <Route path="/loginsignup" element={<LoginSignup />} />
         <Route path="/textgenerator" element={<TextGenerator />} />
