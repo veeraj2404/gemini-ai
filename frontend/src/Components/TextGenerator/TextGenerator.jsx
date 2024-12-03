@@ -26,7 +26,7 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
             }
         };
         fetchMessages();
-    }, [sessionId, userId]);
+    }, [token, sessionId, userId]);
 
     useEffect(() => {
         if (chatEndRef.current) {
