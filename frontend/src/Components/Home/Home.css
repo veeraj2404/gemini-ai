@@ -11,24 +11,75 @@
 }
 
 .card:hover {
-    transform: translateY(-5px) scale(1.02);
+    /* transform: translateY(-5px) scale(1.02); */
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     background: linear-gradient(45deg, rgba(58, 59, 58, 0.2), rgba(163, 172, 178, 0.2));
     border-radius: .375rem;
 }
 
-.card:hover .loginButton{
+.card:hover .loginButton {
     box-shadow: none;
     background: linear-gradient(45deg, rgba(58, 59, 58, 0.2), rgb(45, 46, 45));
 }
 
-.loginButton{
+.loginButton {
     float: right;
     color: white;
     box-shadow: 4px 8px 20px rgba(0, 0, 0, 0.2);
     background-color: rgba(163, 172, 178, 0.2);
 }
 
-.loginButton:hover{
+.loginButton:hover {
     box-shadow: 4px 8px 20px rgba(0, 0, 0, 0.2) !important;
 }
+
+.card-group {
+    display: flex;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+    overflow-x: auto;
+    gap: 1rem;
+    /* Add spacing between cards */
+    padding: 1.5rem 1rem;
+}
+
+.card {
+    flex: 0 0 calc(30% - 1rem);
+    /* Show 3 cards per view with some margin */
+    border-radius: .375rem !important;
+    min-width: calc(30% - 1rem);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card img {
+    max-height: 150px;
+    object-fit: cover;
+}
+
+.card-group::-webkit-scrollbar {
+    height: 8px;
+}
+
+.card-group::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.card-group::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.homeicon{
+    height: 2rem;
+    float: left;
+}
+
+.cardarrow:hover::after {
+    content: "↗"; /* Arrow symbol */
+    position: absolute;
+    top: 3px;
+    right: 13px;
+    font-size: 24px;
+    color: white;
+  }
+  

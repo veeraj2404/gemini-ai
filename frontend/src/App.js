@@ -10,12 +10,15 @@ import ImageContentGenerator from './Components/ImageContentGenerator/ImageConte
 function App() {
   const navigate = useNavigate();
   const location = useLocation();
+  const path = localStorage.getItem('path');
 
   const [isSideNavOpen, setSideNavOpen] = useState(true);
   const [sessions, setSessions] = useState([{ priority: false, sessionId: 1, sessionName: 'Chat Session 1' }]);
   const [imageSessions, setImageSessions] = useState([{ priority: false, imageSessionId: 1, imageSessionName: 'Image Session 1' }]);
   const [untitledSession, setUntitledSession] = useState(true);
   const [imageUntitledSession, setImageUntitledSession] = useState(true);
+  const [isKnowledgeFolderOpen, setKnowledgeFolderOpen] = useState(path === "/textgenerator/" || location.pathname.startsWith("/textgenerator/") ? true : false); // State to control knowledge folder collapse
+  const [isCreativeFolderOpen, setCreativeFolderOpen] = useState(path === "/imagegenerator/" || location.pathname.startsWith("/imagegenerator/") ? true : false); // State to control creative folder collapse
 
   const toggleSideNav = () => {
     setSideNavOpen(!isSideNavOpen);
@@ -89,9 +92,9 @@ function App() {
   return (
 
     <div className="app-container ">
-      <SideNav isOpen={isSideNavOpen} toggleSideNav={toggleSideNav} onNewSession={handleNewSession} imageSessions={imageSessions} setImageSessions={setImageSessions} sessions={sessions} setSessions={setSessions} untitledSession={untitledSession} setUntitledSession={setUntitledSession} imageUntitledSession={imageUntitledSession} setImageUntitledSession={setImageUntitledSession} />
+      <SideNav isCreativeFolderOpen={isCreativeFolderOpen} setCreativeFolderOpen={setCreativeFolderOpen} isKnowledgeFolderOpen={isKnowledgeFolderOpen} setKnowledgeFolderOpen={setKnowledgeFolderOpen} isOpen={isSideNavOpen} toggleSideNav={toggleSideNav} onNewSession={handleNewSession} imageSessions={imageSessions} setImageSessions={setImageSessions} sessions={sessions} setSessions={setSessions} untitledSession={untitledSession} setUntitledSession={setUntitledSession} imageUntitledSession={imageUntitledSession} setImageUntitledSession={setImageUntitledSession} />
       <Routes>
-        <Route path="/home" element={<Home />} />
+        <Route path="/home" element={<Home sessions={sessions} imageSessions={imageSessions}  setCreativeFolderOpen={setCreativeFolderOpen} setKnowledgeFolderOpen={setKnowledgeFolderOpen}/>} />
         <Route path="/loginsignup" element={<LoginSignup />} />
         <Route path="/textgenerator/:sessionId" element={<TextGenerator untitledSession={untitledSession} setUntitledSession={setUntitledSession} />} /> {/* Route for session */}
         <Route path="/imagegenerator/:imageSessionId" element={<ImageContentGenerator imageUntitledSession={imageUntitledSession} setImageUntitledSession={setImageUntitledSession} />} />

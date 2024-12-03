@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faPenToSquare, faEllipsis, faUser, faThumbtack, faAngleUp, faAngleDown, faMessage, faPhotoFilm, faHouse } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faPenToSquare, faEllipsis, faUser, faThumbtack, faAngleUp, faAngleDown, faHouse, faIcons, faBrain } from '@fortawesome/free-solid-svg-icons';
 import './SideNav.css';
 import * as service from './SideNavService';
 import { getChat } from '../TextGenerator/TextGeneratorService.js';
@@ -10,16 +10,13 @@ import { getUser } from '../Profile/ProfileService.js'
 import Profile from '../Profile/Profile.jsx';
 import $ from 'jquery';
 
-export default function SideNav({ isOpen, toggleSideNav, onNewSession, imageSessions, setImageSessions, sessions, setSessions, untitledSession, setUntitledSession, imageUntitledSession, setImageUntitledSession }) {
+export default function SideNav({ isCreativeFolderOpen, setCreativeFolderOpen, isKnowledgeFolderOpen, setKnowledgeFolderOpen, isOpen, toggleSideNav, onNewSession, imageSessions, setImageSessions, sessions, setSessions, untitledSession, setUntitledSession, imageUntitledSession, setImageUntitledSession }) {
 
     const navigate = useNavigate();
     const location = useLocation();
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
-    const path = localStorage.getItem('path');
 
-    const [isKnowledgeFolderOpen, setKnowledgeFolderOpen] = useState(path === "/textgenerator/" || location.pathname.startsWith("/textgenerator/") ? true : false); // State to control knowledge folder collapse
-    const [isCreativeFolderOpen, setCreativeFolderOpen] = useState(path === "/imagegenerator/" || location.pathname.startsWith("/imagegenerator/") ? true : false); // State to control creative folder collapse
     const [preview, setPreview] = useState('');
     const [filteredSessions, setFilteredSessions] = useState([]);
     const [isDropdownOpen, setDropdownOpen] = useState(false); // State to manage dropdown visibility
@@ -471,7 +468,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, imageSess
                                     onClick={toggleKnowledge}
                                 >
                                     <div>
-                                        <FontAwesomeIcon icon={faMessage} style={{ marginRight: "3px" }} />
+                                        <FontAwesomeIcon icon={faBrain} style={{ marginRight: "3px" }} />
                                         Knowledge
                                     </div>
                                     <span className="folder-icon">
@@ -608,7 +605,7 @@ export default function SideNav({ isOpen, toggleSideNav, onNewSession, imageSess
                                     onClick={toggleCreative}
                                 >
                                     <div>
-                                        <FontAwesomeIcon icon={faPhotoFilm} style={{ marginRight: "3px" }} />
+                                        <FontAwesomeIcon icon={faIcons} style={{ marginRight: "3px" }} />
                                         Creative
                                     </div>
                                     <span className="folder-icon">

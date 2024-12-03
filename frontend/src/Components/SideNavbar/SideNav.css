@@ -139,7 +139,6 @@
 }
 
 .bgChange {
-    background-color: rgb(57, 59, 57);
     transition: background-color 0.3s ease-in-out 0.3s; /* Add transition to background-color */
 }
 

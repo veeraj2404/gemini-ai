@@ -35,6 +35,7 @@ export default function LoginSignup() {
         localStorage.setItem('token', data.token);
         localStorage.setItem('userId', data.userId);
         localStorage.setItem('email', data.email);
+        localStorage.setItem('username', data.username);
         window.location.reload();
         // Redirect to text generator on successful signup
         navigate('/textgenerator');
@@ -43,6 +44,7 @@ export default function LoginSignup() {
         localStorage.setItem('token', data.token);
         localStorage.setItem('userId', data.userId);
         localStorage.setItem('email', data.email);
+        localStorage.setItem('username', data.username);
         window.location.reload();
         // Redirect to text generator on successful signup
         navigate('/textgenerator');
