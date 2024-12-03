@@ -23,8 +23,25 @@ export default function Home({ sessions, imageSessions, setCreativeFolderOpen, s
       const iId = Math.max(...imageSessions.map(session => session.imageSessionId));
       setImageSessionId(iId)
     }
-  }, [])
+  }, [sessions, imageSessions])
 
+  const knowledge = () => {
+    if(token) {
+      navigate(`/textgenerator/${sessionId}`)
+      setKnowledgeFolderOpen(true)
+      setCreativeFolderOpen(false)
+    } else {
+      navigate('/textgenerator')
+    }
+  }
+
+  const creative = () => {
+    if(token) {
+      navigate(`/imagegenerator/${imageSessionId}`)
+      setKnowledgeFolderOpen(false)
+      setCreativeFolderOpen(true)
+    }
+  }
 
   const loginPage = () => {
     navigate('/loginsignup')
@@ -58,22 +75,14 @@ export default function Home({ sessions, imageSessions, setCreativeFolderOpen, s
       </div>
 
       <div className="card-group">
-        <div className="card cardarrow" onClick={() => {
-          navigate(`/textgenerator/${sessionId}`)
-          setKnowledgeFolderOpen(true)
-          setCreativeFolderOpen(false)
-        }}>
+        <div className="card cardarrow" onClick={knowledge}>
           <FontAwesomeIcon icon={faBrain} className='homeicon' />
           <div className="card-body mt-4">
             <h5 className="card-title">Knowledge</h5>
             <p className="card-text">AI-based creation of human-like text.</p>
           </div>
         </div>
-        <div className="card cardarrow" onClick={() => {
-          navigate(`/imagegenerator/${sessionId}`)
-          setKnowledgeFolderOpen(false)
-          setCreativeFolderOpen(true)
-        }}>
+        <div className="card cardarrow" onClick={creative}>
           <FontAwesomeIcon icon={faIcons} className='homeicon' />
           <div className="card-body mt-4">
             <h5 className="card-title">Creative</h5>

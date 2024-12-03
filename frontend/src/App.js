@@ -96,7 +96,9 @@ function App() {
       <Routes>
         <Route path="/home" element={<Home sessions={sessions} imageSessions={imageSessions}  setCreativeFolderOpen={setCreativeFolderOpen} setKnowledgeFolderOpen={setKnowledgeFolderOpen}/>} />
         <Route path="/loginsignup" element={<LoginSignup />} />
-        <Route path="/textgenerator/:sessionId" element={<TextGenerator untitledSession={untitledSession} setUntitledSession={setUntitledSession} />} /> {/* Route for session */}
+        <Route path="/textgenerator" element={<TextGenerator />} />
+        <Route path="/textgenerator/:sessionId" element={<TextGenerator untitledSession={untitledSession} setUntitledSession={setUntitledSession} />} />
+        <Route path="/imagegenerator" element={<ImageContentGenerator />} />
         <Route path="/imagegenerator/:imageSessionId" element={<ImageContentGenerator imageUntitledSession={imageUntitledSession} setImageUntitledSession={setImageUntitledSession} />} />
       </Routes>
     </div>

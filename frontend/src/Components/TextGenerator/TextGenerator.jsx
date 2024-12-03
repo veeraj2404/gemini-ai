@@ -7,6 +7,8 @@ import { useParams } from 'react-router-dom';
 
 export default function TextGenerator({ untitledSession, setUntitledSession }) {
 
+    const token = localStorage.getItem('token');
+
     const { sessionId } = useParams();
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
@@ -14,11 +16,14 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
     const userId = localStorage.getItem('userId');
     const chatEndRef = useRef(null);
     const [isTyping, setIsTyping] = useState(false);
+
     useEffect(() => {
         const fetchMessages = async () => {
-            localStorage.setItem('path', '/textgenerator/');
-            const data = await service.getChat(sessionId, userId);
-            setMessages(data.history || [])
+            if (token) {
+                localStorage.setItem('path', '/textgenerator/');
+                const data = await service.getChat(sessionId, userId);
+                setMessages(data.history || [])
+            }
         };
         fetchMessages();
     }, [sessionId, userId]);
@@ -54,7 +59,7 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
     const handleSubmit = async (e) => {
         setIsTyping(true);
         e.preventDefault();
-        if (!untitledSession) {
+        if (token && !untitledSession) {
             setUntitledSession(true)
         }
         if (input.trim()) {
@@ -67,7 +72,9 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
 
             setMessages(newMessages);
             const sessionName = newMessages[0].parts[0].text.substring(0, 20);
-            saveChatToDatabase(newMessages, sessionId, sessionName, userId);
+            if (token) {
+                saveChatToDatabase(newMessages, sessionId, sessionName, userId);
+            }
             setInput('');
 
             try {
@@ -78,7 +85,9 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
                     { parts: [{ text: result }], role: 'model' }
                 ];
                 setMessages(updatedMessages);
-                saveChatToDatabase(updatedMessages, sessionId, sessionName, userId);
+                if (token) {
+                    saveChatToDatabase(updatedMessages, sessionId, sessionName, userId);
+                }
             } catch (error) {
                 console.error('Error generating text:', error);
                 setMessages((prevMessages) => [
