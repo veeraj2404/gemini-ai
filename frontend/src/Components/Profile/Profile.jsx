@@ -28,7 +28,7 @@ export default function Profile({ setProfileOpen }) {
             const user = await service.getUser(userId);
             setUsername(user.username);
             setEmail(user.email);
-            if(user.preview){
+            if (user.preview) {
                 setPreview(user.preview)
             }
         }
@@ -46,7 +46,7 @@ export default function Profile({ setProfileOpen }) {
             setMessage('Password does not match')
             return
         }
-        
+
         const data = {
             username: username,
             email: email,
@@ -57,7 +57,7 @@ export default function Profile({ setProfileOpen }) {
         const user = await service.updateProfile(data);
         setMessage(user.message);
 
-        if(profilePic){
+        if (profilePic) {
             await service.uploadImage(userId, file)
         }
 
@@ -65,11 +65,12 @@ export default function Profile({ setProfileOpen }) {
             setOldPass('');
             setNewPass('');
             setConfirmNewPass('');
+            localStorage.setItem('username', data.username);
             const elements = document.querySelectorAll('.message-alert');
             elements.forEach((element) => {
                 element.style.color = 'green';
             });
-        } else{
+        } else {
             const elements = document.querySelectorAll('.message-alert');
             elements.forEach((element) => {
                 element.style.color = 'red';
@@ -112,7 +113,7 @@ export default function Profile({ setProfileOpen }) {
                             </div>
                             <div className="input-group mb-2">
                                 <span className="input-group-text" >Old Pass</span>
-                                <input style={{ borderTopRightRadius: ".375rem", borderBottomRightRadius: ".375rem"}} id='oldPass' name='oldPass' value={oldPass} onChange={(e) => setOldPass(e.target.value)} type={showPassword ? 'text' : 'password'} className="form-control" />
+                                <input style={{ borderTopRightRadius: ".375rem", borderBottomRightRadius: ".375rem" }} id='oldPass' name='oldPass' value={oldPass} onChange={(e) => setOldPass(e.target.value)} type={showPassword ? 'text' : 'password'} className="form-control" />
                                 <button
                                     type="button"
                                     onMouseDown={() => setShowPassword(true)}
@@ -125,7 +126,7 @@ export default function Profile({ setProfileOpen }) {
                             </div>
                             <div className="input-group mb-2">
                                 <span className="input-group-text" >New Pass</span>
-                                <input style={{ borderTopRightRadius: ".375rem", borderBottomRightRadius: ".375rem"}} id='newPass' name='newPass' value={newPass} onChange={(e) => setNewPass(e.target.value)} type={showNewPassword ? 'text' : 'password'} className="form-control" />
+                                <input style={{ borderTopRightRadius: ".375rem", borderBottomRightRadius: ".375rem" }} id='newPass' name='newPass' value={newPass} onChange={(e) => setNewPass(e.target.value)} type={showNewPassword ? 'text' : 'password'} className="form-control" />
                                 <button
                                     type="button"
                                     onMouseDown={() => setShowNewPassword(true)}
@@ -138,7 +139,7 @@ export default function Profile({ setProfileOpen }) {
                             </div>
                             <div className="input-group mb-2">
                                 <span className="input-group-text" >Confirm Pass</span>
-                                <input style={{ borderTopRightRadius: ".375rem", borderBottomRightRadius: ".375rem"}} id='confirmNewPass' name='confirmNewPass' value={confirmNewPass} onChange={(e) => setConfirmNewPass(e.target.value)} type={showConfirmPassword ? 'text' : 'password'} className="form-control" />
+                                <input style={{ borderTopRightRadius: ".375rem", borderBottomRightRadius: ".375rem" }} id='confirmNewPass' name='confirmNewPass' value={confirmNewPass} onChange={(e) => setConfirmNewPass(e.target.value)} type={showConfirmPassword ? 'text' : 'password'} className="form-control" />
                                 <button
                                     type="button"
                                     onMouseDown={() => setShowConfirmPassword(true)}
