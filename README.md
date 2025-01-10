@@ -1,3 +1,5 @@
+![alt text](frontend/public/image.png)
+
 # ChatGPT Clone using Gemini AI API
 
 ## Overview
