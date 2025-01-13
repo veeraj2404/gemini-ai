@@ -26,7 +26,6 @@ This project is a ChatGPT clone built using the **Gemini AI API**, designed to d
 # Prerequisites
     Node.js installed on your system.
     A valid API key for the Google Cloud Vision API (or Gemini AI API).
-    (Optional) Google Cloud Service Account credentials for Vision API.
 
 # Installation and Setup
 
