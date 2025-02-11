@@ -9,6 +9,7 @@ import { getChat } from '../TextGenerator/TextGeneratorService.js';
 import { getUser } from '../Profile/ProfileService.js'
 import Profile from '../Profile/Profile.jsx';
 import $ from 'jquery';
+import { motion } from "framer-motion";
 
 export default function SideNav({ isCreativeFolderOpen, setCreativeFolderOpen, isKnowledgeFolderOpen, setKnowledgeFolderOpen, isOpen, toggleSideNav, onNewSession, imageSessions, setImageSessions, sessions, setSessions, untitledSession, setUntitledSession, imageUntitledSession, setImageUntitledSession }) {
 
@@ -387,9 +388,20 @@ export default function SideNav({ isCreativeFolderOpen, setCreativeFolderOpen, i
         }
     }
 
+    const container = (delay) => ({
+        hidden: { x: -100, opacity: 0 },
+        visible: {
+          x: 0,
+          opacity: 1,
+          transition: { duration: 0.5, delay: delay }
+        }
+      })
+
     return (
         <>
-            <div className={`side-nav-container ${isOpen ? '' : 'bgChange'}`}>
+            <motion.div variants={container(0)}
+            initial="hidden"
+            animate="visible" className={`side-nav-container ${isOpen ? '' : 'bgChange'}`}>
                 <div className={`main-content ${isOpen ? 'shifted' : 'unshifted'}`}>
                     <button className={`openbtn ${isOpen ? '' : 'bgChange'}`} onClick={toggleSideNav}>
                         <FontAwesomeIcon icon={faBars} />
@@ -737,7 +749,7 @@ export default function SideNav({ isCreativeFolderOpen, setCreativeFolderOpen, i
                         </nav>
                     )
                 }
-            </div>
+            </motion.div>
 
             {/* Bootstrap Modal */}
             {isModalOpen && (

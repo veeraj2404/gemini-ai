@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBrain, faIcons, faImage } from '@fortawesome/free-solid-svg-icons';
 import './Home.css'
 import { useNavigate } from 'react-router-dom';
+import { motion } from "framer-motion";
 
 export default function Home({ sessions, imageSessions, setCreativeFolderOpen, setKnowledgeFolderOpen }) {
   const token = localStorage.getItem('token');
@@ -26,7 +27,7 @@ export default function Home({ sessions, imageSessions, setCreativeFolderOpen, s
   }, [sessions, imageSessions])
 
   const knowledge = () => {
-    if(token) {
+    if (token) {
       navigate(`/textgenerator/${sessionId}`)
       setKnowledgeFolderOpen(true)
       setCreativeFolderOpen(false)
@@ -36,7 +37,7 @@ export default function Home({ sessions, imageSessions, setCreativeFolderOpen, s
   }
 
   const creative = () => {
-    if(token) {
+    if (token) {
       navigate(`/imagegenerator/${imageSessionId}`)
       setKnowledgeFolderOpen(false)
       setCreativeFolderOpen(true)
@@ -47,8 +48,20 @@ export default function Home({ sessions, imageSessions, setCreativeFolderOpen, s
     navigate('/loginsignup')
   }
 
+  const container = (delay) => ({
+    hidden: { x: -100, opacity: 0 },
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: { duration: 0.5, delay: delay }
+    }
+  })
+
   return (
-    <div className='container mt-4'>
+    <motion.div initial={{ x: 100, opacity: 0 }}
+    animate={{ x: 0, opacity: 1 }}
+    transition={{ duration: 0.5, delay: 0 }} 
+     className='container mt-4'>
       <div className="row row-cols-1 row-cols-md-2 g-4 mx-2">
         <div className="col">
           <div className="card">
@@ -98,6 +111,6 @@ export default function Home({ sessions, imageSessions, setCreativeFolderOpen, s
         </div>
       </div>
 
-    </div>
+    </motion.div>
   )
 }
