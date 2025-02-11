@@ -48,15 +48,6 @@ export default function Home({ sessions, imageSessions, setCreativeFolderOpen, s
     navigate('/loginsignup')
   }
 
-  const container = (delay) => ({
-    hidden: { x: -100, opacity: 0 },
-    visible: {
-      x: 0,
-      opacity: 1,
-      transition: { duration: 0.5, delay: delay }
-    }
-  })
-
   return (
     <motion.div initial={{ x: 100, opacity: 0 }}
     animate={{ x: 0, opacity: 1 }}
