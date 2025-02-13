@@ -138,6 +138,9 @@ export default function SideNav({ isCreativeFolderOpen, setCreativeFolderOpen, i
     }
 
     const homePage = () => {
+        if(window.innerWidth <= 768){
+            toggleSideNav()
+        }
         navigate('/home');
     }
 
@@ -401,14 +404,17 @@ export default function SideNav({ isCreativeFolderOpen, setCreativeFolderOpen, i
         <>
             <motion.div variants={container(0)}
             initial="hidden"
-            animate="visible" className={`side-nav-container ${isOpen ? '' : 'bgChange'}`}>
+            animate="visible" className={`side-nav-container ${isOpen ? 'bgpresent' : 'bgChange'}`}>
                 <div className={`main-content ${isOpen ? 'shifted' : 'unshifted'}`}>
                     <button className={`openbtn ${isOpen ? '' : 'bgChange'}`} onClick={toggleSideNav}>
                         <FontAwesomeIcon icon={faBars} />
                     </button>
-                    {
-                        token ? (
-                            <div className="profile-container" ref={dropdownRef}>
+                </div>
+
+                {
+                    token ? (
+                        <>
+                        <div className="profile-container" ref={dropdownRef}>
                                 <button className={`openedit ${isOpen ? '' : 'bgChange'}`} onClick={createNewSession}>
                                     <FontAwesomeIcon icon={faPenToSquare} />
                                 </button>
@@ -434,19 +440,6 @@ export default function SideNav({ isCreativeFolderOpen, setCreativeFolderOpen, i
                                     </div>
                                 )}
                             </div>
-                        ) :
-                            (
-                                <div className="profile-container" style={{ marginLeft: "-47.5px" }}>
-                                    <button className={`openprofile ${isOpen ? '' : 'bgChange'}`} onClick={loginPage}>
-                                        <FontAwesomeIcon icon={faUser} />
-                                    </button>
-                                </div>
-                            )
-                    }
-                </div>
-
-                {
-                    token ? (
                         <nav className={`sidenav my-5 ${isOpen ? 'open' : ''}`}>
                             <div className="search-bar mb-4">
                                 <input onChange={(e) => searchBar(e)} type="text" id='searchBar' className="form-control" placeholder="Search Session" aria-label="session"
@@ -457,7 +450,12 @@ export default function SideNav({ isCreativeFolderOpen, setCreativeFolderOpen, i
                                 <div className="search-bar-menu show" ref={dropdownRef}>
                                     <ul>
                                         {filteredSessions.map(session => (
-                                            <li onClick={() => navigateFromSearchBar(session.sessionId ? session.sessionId : session.imageSessionId)} key={session.sessionId ? session.sessionId : session.imageSessionId}>
+                                            <li onClick={() => {
+                                                if(window.innerWidth <= 768){
+                                                    toggleSideNav()
+                                                }
+                                                navigateFromSearchBar(session.sessionId ? session.sessionId : session.imageSessionId)
+                                                }} key={session.sessionId ? session.sessionId : session.imageSessionId}>
                                                 {session.sessionName ? session.sessionName : session.imageSessionName}
                                             </li>
                                         ))}
@@ -493,6 +491,11 @@ export default function SideNav({ isCreativeFolderOpen, setCreativeFolderOpen, i
                                     <div className="session-content">
                                         {sessions.slice().map((session) => (
                                             <NavLink
+                                                onClick={() => {
+                                                    if(window.innerWidth <= 768){
+                                                        toggleSideNav()
+                                                    }
+                                                }}
                                                 to={`/textgenerator/${session.sessionId}`}
                                                 className={({ isActive }) =>
                                                     isActive ? "session-item active" : "session-item"
@@ -630,6 +633,11 @@ export default function SideNav({ isCreativeFolderOpen, setCreativeFolderOpen, i
                                     <div className="session-content">
                                         {imageSessions.slice().map((session) => (
                                             <NavLink
+                                                onClick={() => {
+                                                    if(window.innerWidth <= 768){
+                                                        toggleSideNav()
+                                                    }
+                                                }}
                                                 to={`/imagegenerator/${session.imageSessionId}`}
                                                 className={({ isActive }) =>
                                                     isActive ? "session-item active" : "session-item"
@@ -736,7 +744,14 @@ export default function SideNav({ isCreativeFolderOpen, setCreativeFolderOpen, i
                             </div>
                             {/* Collapsible folder ends here */}
                         </nav>
+                        </>
                     ) : (
+                        <>
+                        <div className="profile-container" style={{ marginLeft: "-47.5px" }}>
+                                    <button className={`openprofile ${isOpen ? '' : 'bgChange'}`} onClick={loginPage}>
+                                        <FontAwesomeIcon icon={faUser} />
+                                    </button>
+                                </div>
                         <nav className={`sidenav my-5 ${isOpen ? 'open' : ''}`}>
                             <span><h6 className='chatSession'>Klaus-AI</h6></span>
 
@@ -747,6 +762,7 @@ export default function SideNav({ isCreativeFolderOpen, setCreativeFolderOpen, i
                                 </button>
                             </div>
                         </nav>
+                        </>
                     )
                 }
             </motion.div>

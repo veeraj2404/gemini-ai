@@ -12,7 +12,7 @@ function App() {
   const location = useLocation();
   const path = localStorage.getItem('path');
 
-  const [isSideNavOpen, setSideNavOpen] = useState(true);
+  const [isSideNavOpen, setSideNavOpen] = useState(window.innerWidth > 768 ? true : false); // State to control side navbar collapse
   const [sessions, setSessions] = useState([{ priority: false, sessionId: 1, sessionName: 'Chat Session 1' }]);
   const [imageSessions, setImageSessions] = useState([{ priority: false, imageSessionId: 1, imageSessionName: 'Image Session 1' }]);
   const [untitledSession, setUntitledSession] = useState(true);

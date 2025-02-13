@@ -18,7 +18,7 @@ const upload = multer({ storage: multer.memoryStorage() })
 
 // Sign Up
 router.post('/signup', async (req, res) => {
-  console.log("Calling Api to register user...");
+  
   const { username, email, password } = req.body;
 
   try {
@@ -40,7 +40,7 @@ router.post('/signup', async (req, res) => {
 
 // Login
 router.post('/login', async (req, res) => {
-  console.log("Calling Api to login user...");
+  
   const { email, password } = req.body;
 
   try {
@@ -58,7 +58,7 @@ router.post('/login', async (req, res) => {
 });
 
 router.get('/getUser', async (req, res) => {
-  console.log("Calling Api to get user details...");
+  
   const { userId } = req.query;
   try {
 
@@ -81,7 +81,7 @@ router.get('/getUser', async (req, res) => {
 });
 
 router.post('/updateProfile', async (req, res) => {
-  console.log("Calling Api to update user...");
+  
   const { username, email, password, newPass } = req.body;
 
   try {
@@ -118,7 +118,6 @@ router.post('/updateProfile', async (req, res) => {
 });
 
 router.post('/uploadImage', upload.single('file'), async (req, res) => {
-  console.log("Calling Api to save profilePic...");
 
   const { userId } = req.body;
 

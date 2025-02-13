@@ -23,7 +23,6 @@ const uploaded = multer({ storage: multer.memoryStorage() })
 // API endpoint for generating content
 
 router.post('/imagecontent', upload.single('file'), async (req, res) => {
-    console.log("Calling Api for Image Content Generating... ",)
     const file = req.file;  // Access the uploaded file details
     const { imageSessionId, userId, text } = req.body;
     const user = await User.findById(userId);
@@ -77,7 +76,6 @@ router.post('/imagecontent', upload.single('file'), async (req, res) => {
 });
 
 router.post('/upload', uploaded.single('file'), async (req, res) => {
-    console.log("Calling Api to save image data...");
 
     const { imageSessionId, userId, text } = req.body;
     const user = await User.findById(userId);
@@ -118,7 +116,6 @@ router.post('/upload', uploaded.single('file'), async (req, res) => {
 });
 
 router.get('/textgenerate', async (req, res) => {
-    console.log("Calling Api for Text Generating...");
 
     const {history, text} = req.query;
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -134,7 +131,7 @@ router.get('/textgenerate', async (req, res) => {
 })
 
 router.post('/saveChat', async (req, res) => {
-    console.log("Calling Api to save chat data...");
+    
     const { history, sessionId, sessionName, userId } = req.body;
     const user = await User.findById(userId);
 
@@ -166,7 +163,7 @@ router.post('/saveChat', async (req, res) => {
 })
 
 router.post('/renamesession', async (req, res) => {
-    console.log("Calling Api to rename chat session...");
+    
     const { sessionId, sessionName, userId } = req.body;
     const user = await User.findById(userId);
 
@@ -192,7 +189,7 @@ router.post('/renamesession', async (req, res) => {
 })
 
 router.post('/renameimagesession', async (req, res) => {
-    console.log("Calling Api to rename chat session...");
+    
     const { imageSessionId, imageSessionName, userId } = req.body;
     const user = await User.findById(userId);
 
@@ -218,7 +215,7 @@ router.post('/renameimagesession', async (req, res) => {
 })
 
 router.post('/updatepriority', async (req, res) => {
-    console.log("Calling Api to update chat priority...");
+    
     const { sessionId, priority, userId } = req.body;
     const user = await User.findById(userId);
 
@@ -244,7 +241,7 @@ router.post('/updatepriority', async (req, res) => {
 })
 
 router.post('/updateimagepriority', async (req, res) => {
-    console.log("Calling Api to update chat priority...");
+    
     const { imageSessionId, priority, userId } = req.body;
     const user = await User.findById(userId);
 
@@ -270,7 +267,7 @@ router.post('/updateimagepriority', async (req, res) => {
 })
 
 router.post('/deletesession', async (req, res) => {
-    console.log("Calling Api to delete chat session...");
+    
     const { sessionId, userId } = req.body;
     const user = await User.findById(userId);
 
@@ -294,7 +291,7 @@ router.post('/deletesession', async (req, res) => {
 })
 
 router.post('/deleteimagesession', async (req, res) => {
-    console.log("Calling Api to delete chat session...");
+    
     const { imageSessionId, userId } = req.body;
     const user = await User.findById(userId);
 
@@ -318,7 +315,7 @@ router.post('/deleteimagesession', async (req, res) => {
 })
 
 router.get('/getChat', async (req, res) => {
-    console.log("Calling Api for getting chat...");
+    
     const { sessionId, userId } = req.query;
 
     const user = await User.findById(userId);
@@ -346,7 +343,7 @@ router.get('/getChat', async (req, res) => {
 });
 
 router.get('/getImageChat', async (req, res) => {
-    console.log("Calling Api for getting image chat...");
+    
     const { imageSessionId, userId } = req.query;
 
     const user = await User.findById(userId);
@@ -374,7 +371,7 @@ router.get('/getImageChat', async (req, res) => {
 });
 
 router.get('/getSession', async (req, res) => {
-    console.log("Calling Api to get session...");
+    
     const { userId } = req.query;
     const user = await User.findById(userId);
 
@@ -411,7 +408,7 @@ router.get('/getSession', async (req, res) => {
 });
 
 router.get('/getImageSession', async (req, res) => {
-    console.log("Calling Api to get image session...");
+    
     const { userId } = req.query;
     const user = await User.findById(userId);
 
@@ -448,7 +445,7 @@ router.get('/getImageSession', async (req, res) => {
 });
 
 router.get('/generate-pdf', async (req, res) => {
-    console.log("Calling Api to download session chat...");
+    
     try {
         const { sessionName, history } = req.query;
 

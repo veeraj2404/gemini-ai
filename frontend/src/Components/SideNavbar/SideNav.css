@@ -142,6 +142,10 @@
     transition: background-color 0.3s ease-in-out 0.3s; /* Add transition to background-color */
 }
 
+.bgpresent{
+    background-color: rgb(45, 46, 45) !important;
+}
+
 .session-item {
     position: relative;
     display: flex;
@@ -204,6 +208,7 @@
 /* SideNav.css */
 
 .profile-container {
+    width: 100%;
     position: relative; /* Make this the reference for absolute positioning */
     display: inline-block; /* Aligns the button and dropdown correctly */
 }
@@ -399,6 +404,12 @@
 
 /* Responsive design */
 @media screen and (max-width: 768px) {
+    .side-nav-container{
+        background-color: transparent;
+    }
+    .openprofile{
+        background-color: transparent;
+    }
     .sidenav {
         width: 100%;
         transform: translateX(-100%);
@@ -406,10 +417,16 @@
 
     .sidenav.open {
         transform: translateX(0);
+        background-color: rgb(45, 46, 45);
     }
 
     .main-content.shifted {
-        margin-left: 0;
+        /* margin-left: 0; */
+        width: 100vw !important;
+    }
+
+    .main-content.unshifted {
+        margin-left: 48px;
     }
 }
 
@@ -422,5 +439,16 @@
     .openbtn {
         font-size: 16px;
         padding: 8px 12px;
+    }
+
+}
+
+@media screen and (width <= 425px) {
+    .openedit {
+        margin-left:-150px;
+    }
+    
+    .main-content.unshifted {
+        margin-left: 40px;
     }
 }

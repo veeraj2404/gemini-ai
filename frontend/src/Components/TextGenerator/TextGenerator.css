@@ -44,7 +44,7 @@
     flex-direction: column;
     height: calc(100vh - 60px);
     /* Full height minus header */
-    width: 50vw;
+    width: 55vw;
 }
 
 .chat-box {
@@ -194,7 +194,8 @@
     }
 
     .chat-container {
-        margin-left: 0;
+        width: 93vw;
+        margin-left: -20px;
     }
 
     .sidenav a {
