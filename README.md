@@ -40,24 +40,28 @@ Create a .env file in the backend directory with the following content:
 
     cd backend
     npm install
-    node server.js
+    npm run dev
+    [http://localhost:3001]
 
 ## Set Up the Frontend
 
     cd frontend
     npm install
     npm start
+    [http://localhost:3000]
 
 # Project Structure
 
     gemini-ai/
     ├── backend/
-    │   ├── server.js         # Node.js backend logic
-    |   ├── models            # Model
-    |   ├── routes            # api routes
-    │   ├── .env              # Environment variables (ignored in version control)
-    │   ├── package.json      # Backend dependencies
-    │   └── ...               # Other backend files
+    |   ├──src/
+    │   |   ├── server.js      # Node.js backend logic
+    |   |   ├── models/        # Models folders
+    |   |   ├── connection/    # db connection
+    |   |   ├── routes/        # api routes
+    │   ├── .env               # Environment variables (ignored in version control)
+    │   ├── package.json       # Backend dependencies
+    │   └── ...                # Other backend files
     ├── frontend/
     │   ├── src/
     |   |   ├── Assets         # Assets

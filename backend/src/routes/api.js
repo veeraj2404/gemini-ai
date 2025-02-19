@@ -18,7 +18,7 @@ const fileManager = new GoogleAIFileManager(process.env.API_KEY); // Adjust if n
 const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 
 // Set up multer for file upload
-const upload = multer({ dest: 'uploads/' }); // Files will be saved to the "uploads" directory
+const upload = multer({ dest: '/src/uploads/' }); // Files will be saved to the "uploads" directory
 const uploaded = multer({ storage: multer.memoryStorage() })
 // API endpoint for generating content
 
