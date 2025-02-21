@@ -803,7 +803,7 @@ export default function SideNav({ isCreativeFolderOpen, setCreativeFolderOpen, i
 
             {/* Profile Modal */}
             {isProfileOpen && (
-                <Profile setProfileOpen={setProfileOpen} />
+                <Profile setProfileOpen={setProfileOpen} updateProfile={setPreview} />
             )}
 
 

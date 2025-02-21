@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 
-export default function Profile({ setProfileOpen }) {
+export default function Profile({ setProfileOpen, updateProfile }) {
     const userId = localStorage.getItem('userId');
     const [message, setMessage] = useState('');
 
@@ -59,6 +59,7 @@ export default function Profile({ setProfileOpen }) {
 
         if (profilePic) {
             await service.uploadImage(userId, file)
+            updateProfile(URL.createObjectURL(file))
         }
 
         if (user.message === 'Update Successfully') {
