@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faFileArrowUp, faXmark } from '@fortawesome/free-solid-svg-icons';
 import "./ImageContentGenerator.css";
 import { useParams } from 'react-router-dom';
+import { motion } from "framer-motion";
 
 export default function ImageContentGenerator() {
 
@@ -33,6 +34,15 @@ export default function ImageContentGenerator() {
             });
         }
     }, [messages]);
+
+    const container = (delay) => ({
+        hidden: { y: -100, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1,
+            transition: { duration: 0.5, delay: delay }
+        }
+    })
 
     const copyToClipboard = (text, index) => {
         navigator.clipboard.writeText(text).then(() => {
@@ -91,7 +101,11 @@ export default function ImageContentGenerator() {
 
     return (
         <div className="text-container">
-            <div className="container my-4 chat-container">
+            <motion.div variants={container(0)}
+                initial="hidden"
+                animate="visible"
+                className="container my-4 chat-container"
+            >
                 <div className="chat-box">
                     {messages.length === 0 ? (
                         <p className="text-white">No Image Uploaded yet.</p>
@@ -163,7 +177,7 @@ export default function ImageContentGenerator() {
                     </button>
                 </form>
 
-            </div>
+            </motion.div>
         </div>
     )
 }

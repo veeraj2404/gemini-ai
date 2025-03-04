@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import "./TextGenerator.css";
 import { useParams } from 'react-router-dom';
+import { motion } from "framer-motion";
 
 export default function TextGenerator({ untitledSession, setUntitledSession }) {
 
@@ -36,6 +37,15 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
             });
         }
     }, [messages]);
+
+    const container = (delay) => ({
+        hidden: { y: -100, opacity: 0 },
+        visible: {
+            y: 0,
+            opacity: 1,
+            transition: { duration: 0.5, delay: delay }
+        }
+    })
 
     const saveChatToDatabase = (data, id, name, userId) => {
         try {
@@ -102,7 +112,11 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
 
     return (
         <div className="text-container">
-            <div className="container my-4 chat-container">
+            <motion.div variants={container(0)}
+                initial="hidden"
+                animate="visible"
+                className="container my-4 chat-container"
+            >
                 <div className="chat-box">
                     {messages.length === 0 ? (
                         <p className="text-white">No messages yet.</p>
@@ -147,7 +161,7 @@ export default function TextGenerator({ untitledSession, setUntitledSession }) {
                     </button>
                 </form>
 
-            </div>
+            </motion.div>
         </div>
     )
 }

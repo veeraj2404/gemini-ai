@@ -28,21 +28,23 @@
     color: white;
 }
 
-.search-bar{
+.search-bar {
     margin-left: 10px;
     margin-right: 10px;
 }
 
 .search-bar-menu {
     position: absolute;
-    top: 58px; /* Adjust this to position it below the openprofile button */
+    top: 58px;
+    /* Adjust this to position it below the openprofile button */
     margin-left: 10px;
     background-color: white;
     color: black;
     border: 1px solid rgb(69, 68, 67);
     border-radius: .375rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1000; /* Ensure it's above other content */
+    z-index: 1000;
+    /* Ensure it's above other content */
     width: 92%;
 }
 
@@ -54,8 +56,10 @@
 
 .search-bar-menu ul li {
     padding: 10px 15px;
-    white-space: nowrap;      /* Prevent the text from wrapping onto the next line */
-    overflow: hidden;         /* Hide any overflowing content */
+    white-space: nowrap;
+    /* Prevent the text from wrapping onto the next line */
+    overflow: hidden;
+    /* Hide any overflowing content */
     text-overflow: ellipsis;
     color: black;
     text-decoration: none;
@@ -63,24 +67,17 @@
     cursor: pointer;
 }
 
-.search-bar-menu ul li:hover{
+.search-bar-menu ul li:hover {
     background-color: #b7b6b6;
     border-radius: .375rem;
 }
 
-.sidenav a {
-    padding: 6px 8px 8px 12px;
-    text-decoration: none;
-    font-size: 16px;
-    color: white;
-    transition: 0.3s;
-}
 
 .session-item:hover {
     background-color: rgb(57, 59, 57);
 }
 
-.session-content {  
+.session-content {
     overflow-y: auto;
     max-height: 180px;
     scrollbar-width: none;
@@ -90,16 +87,19 @@
 /* Main content adjustments */
 .main-content {
     margin-left: 0;
-    transition: margin-left 0.3s ease-in-out, background-color 0.3s ease-in-out 0.3s; /* Add delay to background color */
+    transition: margin-left 0.3s ease-in-out, background-color 0.3s ease-in-out 0.3s;
+    /* Add delay to background color */
     width: 100%;
 }
 
 .main-content.shifted {
-    margin-left: 250px; /* Shift content when sidenav is open */
+    margin-left: 250px;
+    /* Shift content when sidenav is open */
 }
 
 .main-content.unshifted {
-    margin-left: 55px; /* Shift content when sidenav is closed */
+    margin-left: 55px;
+    /* Shift content when sidenav is closed */
 }
 
 /* Open button */
@@ -114,18 +114,21 @@
     left: 1px;
     z-index: 2;
     background-color: rgb(45, 46, 45);
-    transition: background-color 0.3s ease-in-out; /* Transition for button background color */
+    transition: background-color 0.3s ease-in-out;
+    /* Transition for button background color */
 }
 
-.openprofile{
+.openprofile {
     font-size: 20px;
     cursor: pointer;
     color: white;
     padding: 12px 15px;
     border: none;
     background-color: rgb(45, 46, 45);
-    transition: background-color 0.3s ease-in-out; /* Transition for button background color */
+    transition: background-color 0.3s ease-in-out;
+    /* Transition for button background color */
 }
+
 /* Open Edit */
 .openedit {
     margin-left: -96px;
@@ -135,14 +138,16 @@
     padding: 12px 15px;
     border: none;
     background-color: rgb(45, 46, 45);
-    transition: background-color 0.3s ease-in-out; /* Transition for button background color */
+    transition: background-color 0.3s ease-in-out;
+    /* Transition for button background color */
 }
 
 .bgChange {
-    transition: background-color 0.3s ease-in-out 0.3s; /* Add transition to background-color */
+    transition: background-color 0.3s ease-in-out 0.3s;
+    /* Add transition to background-color */
 }
 
-.bgpresent{
+.bgpresent {
     background-color: rgb(45, 46, 45) !important;
 }
 
@@ -167,41 +172,46 @@
     color: white;
 }
 
-.session-item.active {
-    background-color: rgb(57, 59, 57);
-}
-
 .session-item div {
-    flex: 1; /* This will make the div take up all available space */
-    text-align: left; /* Ensure text inside div is aligned left */
-    overflow: hidden; /* Hide overflow text */
-    white-space: nowrap; /* Prevent text from wrapping to the next line */
-    text-overflow: ellipsis; /* Show ellipsis (...) for overflowing text */
+    white-space: nowrap;
+    /* Prevent text from wrapping to the next line */
+    text-overflow: ellipsis;
+    /* Show ellipsis (...) for overflowing text */
 }
 
 /* Style for the session rename input field */
 .session-rename-input {
-    width: 100%; /* Full width for better UX */
-    padding: 0px 12px; /* Spacing inside the input */
-    font-size: 1rem; /* Adjust font size */
+    width: 100%;
+    /* Full width for better UX */
+    padding: 0px 12px;
+    /* Spacing inside the input */
+    font-size: 1rem;
+    /* Adjust font size */
     background-color: rgb(57, 59, 57);
     margin-bottom: 0px;
     color: white;
-    border: 1px solid #ccc; /* Light border */
-    border-radius: 4px; /* Rounded corners */
-    outline: none; /* Remove default outline */
-    transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transition */
+    border: 1px solid #ccc;
+    /* Light border */
+    border-radius: 4px;
+    /* Rounded corners */
+    outline: none;
+    /* Remove default outline */
+    transition: border-color 0.3s, box-shadow 0.3s;
+    /* Smooth transition */
 }
 
 /* Focus state */
 .session-rename-input:focus {
-    border-color: #007bff; /* Highlighted border on focus */
-    box-shadow: 0 0 4px rgba(0, 123, 255, 0.3); /* Soft blue shadow */
+    border-color: #007bff;
+    /* Highlighted border on focus */
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
+    /* Soft blue shadow */
 }
 
 /* Optional: Style for input when renaming */
 .session-rename-input.renaming {
-    background-color: #f9f9f9; /* Slightly darker background */
+    background-color: #f9f9f9;
+    /* Slightly darker background */
 }
 
 
@@ -209,25 +219,31 @@
 
 .profile-container {
     width: 100%;
-    position: relative; /* Make this the reference for absolute positioning */
-    display: inline-block; /* Aligns the button and dropdown correctly */
+    position: relative;
+    /* Make this the reference for absolute positioning */
+    display: inline-block;
+    /* Aligns the button and dropdown correctly */
 }
 
 .dropdown-menu {
-    display: none; /* Initially hidden */
+    display: none;
+    /* Initially hidden */
     position: absolute;
-    top: 40px; /* Adjust this to position it below the openprofile button */
+    top: 40px;
+    /* Adjust this to position it below the openprofile button */
     right: 0;
-    background-color: rgb(45, 46, 45);    
+    background-color: rgb(45, 46, 45);
     border: 1px solid rgb(45, 46, 45);
     border-radius: .375rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1000; /* Ensure it's above other content */
+    z-index: 1000;
+    /* Ensure it's above other content */
     width: 150px;
 }
 
 .dropdown-menu.show {
-    display: block; /* Show dropdown when 'show' class is added */
+    display: block;
+    /* Show dropdown when 'show' class is added */
 }
 
 .dropdown-menu ul {
@@ -238,8 +254,10 @@
 
 .dropdown-menu ul li {
     padding: 10px 15px;
-    white-space: nowrap;      /* Prevent the text from wrapping onto the next line */
-    overflow: hidden;         /* Hide any overflowing content */
+    white-space: nowrap;
+    /* Prevent the text from wrapping onto the next line */
+    overflow: hidden;
+    /* Hide any overflowing content */
     text-overflow: ellipsis;
     color: white;
     text-decoration: none;
@@ -260,7 +278,7 @@
     background-color: rgb(69, 68, 67);
     border-radius: .375rem;
     transition: background-color 0.3s ease;
-    overflow: hidden;  
+    overflow: hidden;
 }
 
 /* Default state: hide the icon */
@@ -278,7 +296,7 @@
     visibility: visible;
 }
 
-.edit{
+.edit {
     background-color: unset;
     border: none;
 }
@@ -314,19 +332,19 @@
     border-radius: 10px;
 }
 
-.header{
+.header {
     background-color: rgb(45, 46, 45) !important;
     color: white;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
 }
 
-.body-content{
+.body-content {
     background-color: rgb(45, 46, 45) !important;
     color: white;
 }
 
-.content-footer{
+.content-footer {
     background-color: rgb(45, 46, 45) !important;
     color: white;
     border-top: none;
@@ -357,13 +375,16 @@
     background-color: rgb(57, 59, 57);
     transition: background-color 0.3s ease;
 }
+
 .folder-icon {
-    visibility: hidden; /* Initially hide the icon */
+    visibility: hidden;
+    /* Initially hide the icon */
     transition: visibility 0.2s ease;
 }
 
 .folder-btn:hover .folder-icon {
-    visibility: visible; /* Show the icon on hover */
+    visibility: visible;
+    /* Show the icon on hover */
 }
 
 .folder-list {
@@ -386,7 +407,7 @@
     background-color: rgb(57, 59, 57);
 }
 
-.homepage{
+.homepage {
     width: 100%;
     background-color: rgb(45, 46, 45);
     border: none;
@@ -400,16 +421,137 @@
     border-radius: .375rem;
 }
 
+.session-container {
+    margin: 1rem;
+    color: white;
+}
 
+.section {
+    margin-top: 1rem;
+}
+
+.home {
+    margin-bottom: 2px;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: .375rem;
+}
+
+.folder {
+    margin-bottom: 2px;
+}
+
+.folder-head {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: .375rem;
+}
+
+.home:hover,
+.folder-head:hover {
+    background-color: rgb(57, 59, 57);
+    transition: background-color 0.3s ease;
+}
+
+.folder-content {
+    display: grid;
+    margin-left: 5%;
+}
+
+.session-item {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2px;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: .375rem;
+    color: white;
+    text-decoration: none;
+}
+
+.session-item:hover {
+    background-color: rgb(57, 59, 57);
+    transition: background-color 0.3s ease;
+}
+
+.session-icon {
+    display: flex;
+    align-items: center;
+    position: relative;
+    visibility: hidden;
+    transition: visibility 0.1s ease;
+}
+
+.folder-active {
+    background-color: rgb(57, 59, 57);
+}
+
+.session-item.active {
+    background-color: rgb(57, 59, 57);
+}
+
+.session-item.active .session-icon,
+.session-item:hover .session-icon {
+    visibility: visible;
+}
+
+.action-menu {
+    position: absolute;
+    top: 20px;
+    right: 0;
+    z-index: 100;
+    background-color: rgb(45, 46, 45);
+    border-radius: .375rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.action-menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.action-menu ul li {
+    padding: 10px 25px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+}
+
+.action-menu ul li:hover {
+    background-color: rgb(69, 68, 67);
+    border-radius: .375rem;
+    transition: background-color 0.3s ease;
+    overflow: hidden;
+}
+
+.session-rename-input {
+    border: none;
+    padding: 0;
+    width: 90%;
+    border-radius: .375rem;
+    color: white;
+    background-color: transparent;
+    text-decoration: none;
+}
+
+.modal {
+    background: rgba(0, 0, 0, 0.7);
+}
 
 /* Responsive design */
 @media screen and (max-width: 768px) {
-    .side-nav-container{
+    .side-nav-container {
         background-color: transparent;
     }
-    .openprofile{
+
+    .openprofile {
         background-color: transparent;
     }
+
     .sidenav {
         width: 100%;
         transform: translateX(-100%);
@@ -432,7 +574,8 @@
 
 @media screen and (max-width: 576px) {
     .sidenav a {
-        font-size: 20px;  /* Adjust font size for smaller screens */
+        font-size: 20px;
+        /* Adjust font size for smaller screens */
         padding: 10px 20px;
     }
 
@@ -443,11 +586,11 @@
 
 }
 
-@media screen and (width <= 425px) {
+@media screen and (width <=425px) {
     .openedit {
-        margin-left:-150px;
+        margin-left: -150px;
     }
-    
+
     .main-content.unshifted {
         margin-left: 40px;
     }
